@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@" << endl;
+includedir=@includedir@
+
+-----------------------------------------------
+  
+Name: @PACKAGE_NAME@ consensus library
+Description: Library for the SalemCash consensus protocol.
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lsalemcashconsensus
+Cflags: -I${includedir}
+Requires.private: libcrypto
