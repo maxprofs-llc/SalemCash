@@ -1,0 +1,4 @@
+start: node bin/salemcash.js;
+compose:up: docker-compose up;
+test: _mocha -u bdd --colors test/;
+diagrams: mmdc -i doc/blockchain.mmd -o doc/blockchain.png -b transparent && mmdc -i doc/components.mmd -o doc/components.png -b transparent
