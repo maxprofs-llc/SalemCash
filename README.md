@@ -1,83 +1,55 @@
-The SalemCash Core
-==================
+### Compiling/running unit tests
 
-Setup
----------------------
-SalemCash Core is the original SalemCash client and it builds the backbone of the network. It downloads and, by default, stores the entire history of Bitcoin transactions (which is currently more than 100 GBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
+Unit tests will be automatically compiled if dependencies were met in `./configure`
+and tests weren't explicitly disabled.
 
-To download the SalemCash Core, visit [SalemCashcore.org](https://salemcashcore.org/en/releases/).
+After configuring, they can be run with `make check`.
 
-Running
----------------------
-The following are some helpful notes on how to run Bitcoin on your native platform.
+To run the salemcashd tests manually, launch `src/test/test_salemcash`. To recompile
+after a test file was modified, run `make` and then run the test again. If you
+modify a non-test file, use `make -C src/test` to recompile only what's needed
+to run the salemcashd tests.
 
-### Unix
+To add more bitcoind tests, add `BOOST_AUTO_TEST_CASE` functions to the existing
+.cpp files in the `test/` directory or add new .cpp files that
+implement new BOOST_AUTO_TEST_SUITE sections.
 
-Unpack the files into a directory and run:
+To run the salemcash-qt tests manually, launch `src/qt/test/test_salemcash-qt`
 
-- `bin/SalemCash-qt` (GUI) or
-- `bin/SalemCashd` (headless)
+To add more salemcash-qt tests, add them to the `src/qt/test/` directory and
+the `src/qt/test/test_main.cpp` file.
 
-### Windows
+### Running individual tests
 
-Unpack the files into a directory, and then run SalemCash-qt.exe.
+test_salemcash has some built-in command-line arguments; for
+example, to run just the getarg_tests verbosely:
 
-### OS X
+    test_salemcash --log_level=all --run_test=getarg_tests
 
-Drag SalemCash-Core to your applications folder, and then run SalemCash-Core.
+... or to run just the doubledash test:
 
-### Need Help?
+    test_salemcash --run_test=getarg_tests/doubledash
 
-* See the documentation at the [Bitcoin Wiki](https://en.salemcash.it/wiki/Main_Page)
-for help and more information.
-* Ask for help on [#SalemCash](http://webchat.freenode.net?channels=SalemCash) on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net?channels=SalemCash).
-* Ask for help on the [SalemCashTalk](https://salemcashtalk.org/) forums, in the [Technical Support board](https://salemcashtalk.org/index.php?board=4.0).
+Run `test_salemcash --help` for the full list.
 
-Building
----------------------
-The following are developer notes on how to build SalemCash on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+### Note on adding test cases
 
-- [Dependencies](dependencies.md)
-- [OS X Build Notes](build-osx.md)
-- [Unix Build Notes](build-unix.md)
-- [Windows Build Notes](build-windows.md)
-- [OpenBSD Build Notes](build-openbsd.md)
-- [NetBSD Build Notes](build-netbsd.md)
-- [Gitian Building Guide](gitian-building.md)
+The sources in this directory are unit test cases.  Boost includes a
+unit testing framework, and since salemcash already uses boost, it makes
+sense to simply use this framework rather than require developers to
+configure some other framework (we want as few impediments to creating
+unit tests as possible).
 
-Development
----------------------
-The SalemCash repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The build system is setup to compile an executable called `test_salemcash`
+that runs all of the unit tests.  The main source file is called
+test_salemcash.cpp. To add a new unit test file to our test suite you need 
+to add the file to `src/Makefile.test.include`. The pattern is to create 
+one test file for each class or source file for which you want to create 
+unit tests.  The file naming convention is `<source_filename>_tests.cpp` 
+and such files should wrap their tests in a test suite 
+called `<source_filename>_tests`. For an example of this pattern, 
+examine `uint256_tests.cpp`.
 
-- [Developer Notes](developer-notes.md)
-- [Release Notes](release-notes.md)
-- [Release Process](release-process.md)
-- [Source Code Documentation (External Link)](https://dev.visucore.com/SalemCash/doxygen/)
-- [Translation Process](translation_process.md)
-- [Translation Strings Policy](translation_strings_policy.md)
-- [Travis CI](travis-ci.md)
-- [Unauthenticated REST Interface](REST-interface.md)
-- [Shared Libraries](shared-libraries.md)
-- [BIPS](bips.md)
-- [Dnsseed Policy](dnsseed-policy.md)
-- [Benchmarking](benchmarking.md)
-
-### Resources
-* Discuss on the [SalemCashTalk](https://salemcashtalk.org/) forums, in the [Development & Technical Discussion board](https://salemcashtalk.org/index.php?board=6.0).
-* Discuss project-specific development on #SalemCash-core-dev on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=salemcash-core-dev).
-* Discuss general SalemCash development on #SalemCash-dev on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=salemcash-dev).
-
-### Miscellaneous
-- [Assets Attribution](assets-attribution.md)
-- [Files](files.md)
-- [Fuzz-testing](fuzzing.md)
-- [Reduce Traffic](reduce-traffic.md)
-- [Tor Support](tor.md)
-- [Init Scripts (systemd/upstart/openrc)](init.md)
-- [ZMQ](zmq.md)
-
-License
----------------------
-Distributed under the [MIT software license](/COPYING).
-This product includes software developed by the OpenSSL Project for use in the [OpenSSL Toolkit](https://www.openssl.org/). This product includes
-cryptographic software written by Eric Young ([eay@cryptsoft.com](mailto:eay@cryptsoft.com)), and UPnP software written by Thomas Bernard.
+For further reading, I found the following website to be helpful in
+explaining how the boost unit test framework works:
+[http://www.alittlemadness.com/2009/03/31/c-unit-testing-with-boosttest/](http://archive.is/dRBGf).
