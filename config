@@ -1,0 +1,7 @@
+[main]
+host = https://www.transifex.com
+
+[SalemCash.qt-translation-016x]
+file_filter = src/qt/locale/SalemCash_<lang>.ts
+source_file = src/qt/locale/SalemCash_en.ts
+source_lang = en
