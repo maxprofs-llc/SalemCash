@@ -1,44 +1,154 @@
-// Copyright (c) 2011 The LevelDB Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file. See the AUTHORS file for names of contributors.
+// Copyright (c) 2018 The Salemcash developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef STORAGE_LEVELDB_TABLE_BLOCK_H_
-#define STORAGE_LEVELDB_TABLE_BLOCK_H_
+#ifndef SALEMCASH_PRIMITIVES_BLOCK_H
+#define SALEMCASH_PRIMITIVES_BLOCK_H
 
-#include <stddef.h>
-#include <stdint.h>
-#include "leveldb/iterator.h"
+#include <primitives/transaction.h>
+#include <serialize.h>
+#include <uint256.h>
 
-namespace leveldb {
+/** Nodes collect new transactions into a block, hash them into a hash tree,
+ * and scan through nonce values to make the block's hash satisfy proof-of-work
+ * requirements.  When they solve the proof-of-work, they broadcast the block
+ * to everyone and the block is added to the block chain.  The first transaction
+ * in the block is a special one that creates the new cash owned by the creator
+ * of the block.
+ */
+class CBlockHeader
+{
+public:
+    // header
+    int32_t nVersion;
+    uint256 hashPrevBlock;
+    uint256 hashMerkleRoot;
+    uint32_t nTime;
+    uint32_t nBits;
+    uint32_t nNonce;
 
-struct BlockContents;
-class Comparator;
+    CBlockHeader()
+    {
+        SetNull();
+    }
 
-class Block {
- public:
-  // Initialize the block with the specified contents.
-  explicit Block(const BlockContents& contents);
+    ADD_SERIALIZE_METHODS;
 
-  ~Block();
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(this->nVersion);
+        READWRITE(hashPrevBlock);
+        READWRITE(hashMerkleRoot);
+        READWRITE(nTime);
+        READWRITE(nBits);
+        READWRITE(nNonce);
+    }
 
-  size_t size() const { return size_; }
-  Iterator* NewIterator(const Comparator* comparator);
+    void SetNull()
+    {
+        nVersion = 0;
+        hashPrevBlock.SetNull();
+        hashMerkleRoot.SetNull();
+        nTime = 0;
+        nBits = 0;
+        nNonce = 0;
+    }
 
- private:
-  uint32_t NumRestarts() const;
+    bool IsNull() const
+    {
+        return (nBits == 0);
+    }
 
-  const char* data_;
-  size_t size_;
-  uint32_t restart_offset_;     // Offset in data_ of restart array
-  bool owned_;                  // Block owns data_[]
+    uint256 GetHash() const;
 
-  // No copying allowed
-  Block(const Block&);
-  void operator=(const Block&);
-
-  class Iter;
+    int64_t GetBlockTime() const
+    {
+        return (int64_t)nTime;
+    }
 };
 
-}  // namespace leveldb
 
-#endif  // STORAGE_LEVELDB_TABLE_BLOCK_H_
+class CBlock : public CBlockHeader
+{
+public:
+    // network and disk
+    std::vector<CTransactionRef> vtx;
+
+    // memory only
+    mutable bool fChecked;
+
+    CBlock()
+    {
+        SetNull();
+    }
+
+    CBlock(const CBlockHeader &header)
+    {
+        SetNull();
+        *(static_cast<CBlockHeader*>(this)) = header;
+    }
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(*static_cast<CBlockHeader*>(this));
+        READWRITE(vtx);
+    }
+
+    void SetNull()
+    {
+        CBlockHeader::SetNull();
+        vtx.clear();
+        fChecked = false;
+    }
+
+    CBlockHeader GetBlockHeader() const
+    {
+        CBlockHeader block;
+        block.nVersion       = nVersion;
+        block.hashPrevBlock  = hashPrevBlock;
+        block.hashMerkleRoot = hashMerkleRoot;
+        block.nTime          = nTime;
+        block.nBits          = nBits;
+        block.nNonce         = nNonce;
+        return block;
+    }
+
+    std::string ToString() const;
+};
+
+/** Describes a place in the block chain to another node such that if the
+ * other node doesn't have the same branch, it can find a recent common trunk.
+ * The further back it is, the further before the fork it may be.
+ */
+struct CBlockLocator
+{
+    std::vector<uint256> vHave;
+
+    CBlockLocator() {}
+
+    explicit CBlockLocator(const std::vector<uint256>& vHaveIn) : vHave(vHaveIn) {}
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        int nVersion = s.GetVersion();
+        if (!(s.GetType() & SER_GETHASH))
+            READWRITE(nVersion);
+        READWRITE(vHave);
+    }
+
+    void SetNull()
+    {
+        vHave.clear();
+    }
+
+    bool IsNull() const
+    {
+        return vHave.empty();
+    }
+};
+
+#endif // SALEMCASH_PRIMITIVES_BLOCK_H
