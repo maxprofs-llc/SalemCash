@@ -63,10 +63,10 @@ std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction &tx, int flags
             continue;
         }
 
-        int nCoinHeight = (*prevHeights)[txinIndex];
+        int nCashHeight = (*prevHeights)[txinIndex];
 
         if (txin.nSequence & CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG) {
-            int64_t nCoinTime = block.GetAncestor(std::max(nCoinHeight-1, 0))->GetMedianTimePast();
+            int64_t nCashTime = block.GetAncestor(std::max(nCashHeight-1, 0))->GetMedianTimePast();
             // NOTE: Subtract 1 to maintain nLockTime semantics
             // BIP 68 relative lock times have the semantics of calculating
             // the first block or time at which the transaction would be
@@ -82,7 +82,7 @@ std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction &tx, int flags
             // block prior.
             nMinTime = std::max(nMinTime, nCashTime + (int64_t)((txin.nSequence & CTxIn::SEQUENCE_LOCKTIME_MASK) << CTxIn::SEQUENCE_LOCKTIME_GRANULARITY) - 1);
         } else {
-            nMinHeight = std::max(nMinHeight, nCoinHeight + (int)(txin.nSequence & CTxIn::SEQUENCE_LOCKTIME_MASK) - 1);
+            nMinHeight = std::max(nMinHeight, nCashHeight + (int)(txin.nSequence & CTxIn::SEQUENCE_LOCKTIME_MASK) - 1);
         }
     }
 
@@ -118,9 +118,9 @@ unsigned int GetLegacySigOpCount(const CTransaction& tx)
     return nSigOps;
 }
 
-unsigned int GetP2SHSigOpCount(const CTransaction& tx, const CCoinsViewCache& inputs)
+unsigned int GetP2SHSigOpCount(const CTransaction& tx, const CCashViewCache& inputs)
 {
-    if (tx.IsCoinhBase())
+    if (tx.IsCashhBase())
         return 0;
 
     unsigned int nSigOps = 0;
@@ -148,7 +148,7 @@ int64_t GetTransactionSigOpCost(const CTransaction& tx, const CCashViewCache& in
 
     for (unsigned int i = 0; i < tx.vin.size(); i++)
     {
-        const Cash& casj = inputs.AccessCoin(tx.vin[i].prevout);
+        const Cash& casj = inputs.AccessCash(tx.vin[i].prevout);
         assert(!cash.IsSpent());
         const CTxOut &prevout = cash.out;
         nSigOps += CountWitnessSigOps(tx.vin[i].scriptSig, prevout.scriptPubKey, &tx.vin[i].scriptWitness, flags);
@@ -216,14 +216,14 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
     CAmount nValueIn = 0;
     for (unsigned int i = 0; i < tx.vin.size(); ++i) {
         const COutPoint &prevout = tx.vin[i].prevout;
-        const Coin& coin = inputs.AccessCoin(prevout);
-        assert(!coin.IsSpent());
+        const Cash& cash = inputs.AccessCash(prevout);
+        assert(!cash.IsSpent());
 
-        // If prev is coinbase, check that it's matured
-        if (cash.IsCoinBase() && nSpendHeight - cash.nHeight < COINBASE_MATURITY) {
+        // If prev is cashbase, check that it's matured
+        if (cash.IsCashBase() && nSpendHeight - cash.nHeight < CASHBASE_MATURITY) {
             return state.Invalid(false,
-                REJECT_INVALID, "bad-txns-premature-spend-of-coinbase",
-                strprintf("tried to spend coinbase at depth %d", nSpendHeight - cash.nHeight));
+                REJECT_INVALID, "bad-txns-premature-spend-of-cashbase",
+                strprintf("tried to spend cashbase at depth %d", nSpendHeight - cash.nHeight));
         }
 
         // Check for negative or overflow input values

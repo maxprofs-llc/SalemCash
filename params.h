@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The SpecialalemCash developers
+// Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -22,7 +22,7 @@ enum DeploymentPos
 };
 
 /**
- * Struct for each individual consensus rule change using BIP9.
+ * Structure of every individual consensus rule change using BIP9.
  */
 struct BIP9Deployment {
     /** Bit position to select the particular bit in nVersion. */
@@ -31,10 +31,8 @@ struct BIP9Deployment {
     int64_t nStartTime;
     /** Timeout/expiry MedianTime for the deployment attempt. */
     int64_t nTimeout;
-
     /** Constant for nTimeout very far in the future. */
     static constexpr int64_t NO_TIMEOUT = std::numeric_limits<int64_t>::max();
-
     /** Special value for nStartTime indicating that the deployment is always active.
      *  This is useful for testing, as it means tests don't need to deal with the activation
      *  process (which takes at least 3 BIP9 intervals). Only tests that specifically test the

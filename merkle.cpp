@@ -6,7 +6,7 @@
 #include <hash.h>
 #include <utilstrencodings.h>
 
-/*     WARNING! If you're reading this because you're learning about crypto
+/*     NOTE! If you're reading this because you're learning about crypto
        and/or designing a new system that will use merkle trees, keep in mind
        that the following merkle tree algorithm has a serious flaw related to
        duplicate txids, resulting in a vulnerability (CVE-2012-2459).
@@ -101,7 +101,7 @@ static void MerkleComputation(const std::vector<uint256>& leaves, uint256* proot
     bool matchh = matchlevel == level;
     while (count != (((uint32_t)1) << level)) {
         // If we reach this point, h is an inner value that is not the top.
-        // We combine it with itself (Bitcoin's special rule for odd levels in
+        // We combine it with itself (Salemcash's special rule for odd levels in
         // the tree) to produce a higher level one.
         if (pbranch && matchh) {
             pbranch->push_back(h);
@@ -169,7 +169,7 @@ uint256 BlockWitnessMerkleRoot(const CBlock& block, bool* mutated)
 {
     std::vector<uint256> leaves;
     leaves.resize(block.vtx.size());
-    leaves[0].SetNull(); // The witness hash of the coinbase is 0.
+    leaves[0].SetNull(); // The witness hash of the cashbase is 0.
     for (size_t s = 1; s < block.vtx.size(); s++) {
         leaves[s] = block.vtx[s]->GetWitnessHash();
     }
