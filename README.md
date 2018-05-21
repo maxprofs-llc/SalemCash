@@ -1,174 +1,95 @@
-**LevelDB is a fast key-value storage library written at Google that provides an ordered mapping from string keys to string values.**
+This directory contains the SalemcashQT graphical user interface (GUI). It uses the cross platform framework [QT](https://www1.qt.io/developers/).
 
-[![Build Status](https://travis-ci.org/google/leveldb.svg?branch=master)](https://travis-ci.org/google/leveldb)
+The current precise version for QT 5 is specified in [qt.mk](/depends/packages/qt.mk). QT 4 is also supported (see [#8263](https://github.com/PastorOmbura/SalemCash/issues/8263)).
 
-Authors: Sanjay Ghemawat (sanjay@google.com) and Jeff Dean (jeff@google.com)
+## Compile and run
 
-# Features
-  * Keys and values are arbitrary byte arrays.
-  * Data is stored sorted by key.
-  * Callers can provide a custom comparison function to override the sort order.
-  * The basic operations are `Put(key,value)`, `Get(key)`, `Delete(key)`.
-  * Multiple changes can be made in one atomic batch.
-  * Users can create a transient snapshot to get a consistent view of data.
-  * Forward and backward iteration is supported over the data.
-  * Data is automatically compressed using the [Snappy compression library](http://google.github.io/snappy/).
-  * External activity (file system operations etc.) is relayed through a virtual interface so users can customize the operating system interactions.
+See build instructions ([OSX](/doc/build-osx.md), [Windows](/doc/build-windows.md), [Unix](/doc/build-unix.md), etc).
 
-# Documentation
-  [LevelDB library documentation](https://github.com/google/leveldb/blob/master/doc/index.md) is online and bundled with the source code.
+To run:
 
+```sh
+./src/qt/salemcash-qt
+```
 
-# Limitations
-  * This is not a SQL database.  It does not have a relational data model, it does not support SQL queries, and it has no support for indexes.
-  * Only a single process (possibly multi-threaded) can access a particular database at a time.
-  * There is no client-server support builtin to the library.  An application that needs such support will have to wrap their own server around the library.
+## Files and directories
 
-# Contributing to the leveldb Project
-The leveldb project welcomes contributions. leveldb's primary goal is to be
-a reliable and fast key/value store. Changes that are in line with the
-features/limitations outlined above, and meet the requirements below,
-will be considered.
+### forms
 
-Contribution requirements:
+Contains [Designer UI](http://doc.qt.io/qt-5.9/designer-using-a-ui-file.html) files. They are created with [Qt Creator](#use-qt-Creator-as IDE), but can be edited using any text editor.
 
-1. **POSIX only**. We _generally_ will only accept changes that are both
-   compiled, and tested on a POSIX platform - usually Linux. Very small
-   changes will sometimes be accepted, but consider that more of an
-   exception than the rule.
+### locale
 
-2. **Stable API**. We strive very hard to maintain a stable API. Changes that
-   require changes for projects using leveldb _might_ be rejected without
-   sufficient benefit to the project.
+Contains translations. They are periodically updated. The process is described [here](/doc/translation_process.md).
 
-3. **Tests**: All changes must be accompanied by a new (or changed) test, or
-   a sufficient explanation as to why a new (or changed) test is not required.
+### res
 
-## Submitting a Pull Request
-Before any pull request will be accepted the author must first sign a
-Contributor License Agreement (CLA) at https://cla.developers.google.com/.
+Resources such as the icon.
 
-In order to keep the commit timeline linear
-[squash](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Squashing-Commits)
-your changes down to a single commit and [rebase](https://git-scm.com/docs/git-rebase)
-on google/leveldb/master. This keeps the commit timeline linear and more easily sync'ed
-with the internal repository at Google. More information at GitHub's
-[About Git rebase](https://help.github.com/articles/about-git-rebase/) page.
+### test
 
-# Performance
+Tests.
 
-Here is a performance report (with explanations) from the run of the
-included db_bench program.  The results are somewhat noisy, but should
-be enough to get a ballpark performance estimate.
+### salemcashgui.(h/cpp)
 
-## Setup
+Represents the main window of the Salemcash UI.
 
-We use a database with a million entries.  Each entry has a 16 byte
-key, and a 100 byte value.  Values used by the benchmark compress to
-about half their original size.
+### \*model.(h/cpp)
 
-    LevelDB:    version 1.1
-    Date:       Sun May  1 12:11:26 2011
-    CPU:        4 x Intel(R) Core(TM)2 Quad CPU    Q6600  @ 2.40GHz
-    CPUCache:   4096 KB
-    Keys:       16 bytes each
-    Values:     100 bytes each (50 bytes after compression)
-    Entries:    1000000
-    Raw Size:   110.6 MB (estimated)
-    File Size:  62.9 MB (estimated)
+The model. When it has a corresponding controller, it generally inherits from  [QAbstractTableModel](http://doc.qt.io/qt-5/qabstracttablemodel.html). Models that are used by controllers as helpers inherit from other QT classes like [QValidator](http://doc.qt.io/qt-5/qvalidator.html).
 
-## Write performance
+ClientModel is used by the main application `salemcashgui` and several models like `peertablemodel`.
 
-The "fill" benchmarks create a brand new database, in either
-sequential, or random order.  The "fillsync" benchmark flushes data
-from the operating system to the disk after every operation; the other
-write operations leave the data sitting in the operating system buffer
-cache for a while.  The "overwrite" benchmark does random writes that
-update existing keys in the database.
+### \*page.(h/cpp)
 
-    fillseq      :       1.765 micros/op;   62.7 MB/s
-    fillsync     :     268.409 micros/op;    0.4 MB/s (10000 ops)
-    fillrandom   :       2.460 micros/op;   45.0 MB/s
-    overwrite    :       2.380 micros/op;   46.5 MB/s
+A controller. `:NAMEpage.cpp` generally includes `:NAMEmodel.h` and `forms/:NAME.page.ui` with a similar `:NAME`.
 
-Each "op" above corresponds to a write of a single key/value pair.
-I.e., a random write benchmark goes at approximately 400,000 writes per second.
+### \*dialog.(h/cpp)
 
-Each "fillsync" operation costs much less (0.3 millisecond)
-than a disk seek (typically 10 milliseconds).  We suspect that this is
-because the hard disk itself is buffering the update in its memory and
-responding before the data has been written to the platter.  This may
-or may not be safe based on whether or not the hard disk has enough
-power to save its memory in the event of a power failure.
+Various dialogs, e.g. to open a URL. Inherit from [QDialog](http://doc.qt.io/qt-4.8/qdialog.html).
 
-## Read performance
+### paymentserver.(h/cpp)
 
-We list the performance of reading sequentially in both the forward
-and reverse direction, and also the performance of a random lookup.
-Note that the database created by the benchmark is quite small.
-Therefore the report characterizes the performance of leveldb when the
-working set fits in memory.  The cost of reading a piece of data that
-is not present in the operating system buffer cache will be dominated
-by the one or two disk seeks needed to fetch the data from disk.
-Write performance will be mostly unaffected by whether or not the
-working set fits in memory.
+Used to process BIP21 and BIP70 (see https://github.com/PastorOmbura/SalemCash/pull/11622) payment URI / requests. Also handles URI based application switching (e.g. when following a salemcash:... link from a browser).
 
-    readrandom  : 16.677 micros/op;  (approximately 60,000 reads per second)
-    readseq     :  0.476 micros/op;  232.3 MB/s
-    readreverse :  0.724 micros/op;  152.9 MB/s
+### walletview.(h/cpp)
 
-LevelDB compacts its underlying storage data in the background to
-improve read performance.  The results listed above were done
-immediately after a lot of random writes.  The results after
-compactions (which are usually triggered automatically) are better.
+Represents the view to a single wallet.
 
-    readrandom  : 11.602 micros/op;  (approximately 85,000 reads per second)
-    readseq     :  0.423 micros/op;  261.8 MB/s
-    readreverse :  0.663 micros/op;  166.9 MB/s
+### Other .h/cpp files
 
-Some of the high cost of reads comes from repeated decompression of blocks
-read from disk.  If we supply enough cache to the leveldb so it can hold the
-uncompressed blocks in memory, the read performance improves again:
+* UI elements like SalemcashAmountField, which inherit from QWidget.
+* `salemcashstrings.cpp`: automatically generated
+* `salemcashunits.(h/cpp)`: SCS / mSCS / etc handling
+* `callback.h`
+* `guiconstants.h`: UI colors, app name, etc
+* `guiutil.h`: several helper functions
+* `macdockiconhandler.(h/cpp)`
+* `macdockiconhandler.(h/cpp)`: display notifications in OSX
 
-    readrandom  : 9.775 micros/op;  (approximately 100,000 reads per second before compaction)
-    readrandom  : 5.215 micros/op;  (approximately 190,000 reads per second after compaction)
+## Contribute
 
-## Repository contents
+See [CONTRIBUTING.md](/CONTRIBUTING.md) for general guidelines. Specifically for QT:
 
-See [doc/index.md](doc/index.md) for more explanation. See
-[doc/impl.md](doc/impl.md) for a brief overview of the implementation.
+* don't change `local/salemcash_en.ts`; this happens [automatically](/doc/translation_process.md#writing-code-with-translations)
 
-The public interface is in include/*.h.  Callers should not include or
-rely on the details of any other header files in this package.  Those
-internal APIs may be changed without warning.
+## Using Qt Creator as IDE
 
-Guide to header files:
+You can use Qt Creator as an IDE. This is especially useful if you want to change
+the UI layout.
 
-* **include/db.h**: Main interface to the DB: Start here
+Download and install the community edition of [Qt Creator](https://www.qt.io/download/).
+Uncheck everything except Qt Creator during the installation process.
 
-* **include/options.h**: Control over the behavior of an entire database,
-and also control over the behavior of individual reads and writes.
+Instructions for OSX:
 
-* **include/comparator.h**: Abstraction for user-specified comparison function.
-If you want just bytewise comparison of keys, you can use the default
-comparator, but clients can write their own comparator implementations if they
-want custom ordering (e.g. to handle different character encodings, etc.)
-
-* **include/iterator.h**: Interface for iterating over data. You can get
-an iterator from a DB object.
-
-* **include/write_batch.h**: Interface for atomically applying multiple
-updates to a database.
-
-* **include/slice.h**: A simple module for maintaining a pointer and a
-length into some other byte array.
-
-* **include/status.h**: Status is returned from many of the public interfaces
-and is used to report success and various kinds of errors.
-
-* **include/env.h**:
-Abstraction of the OS environment.  A posix implementation of this interface is
-in util/env_posix.cc
-
-* **include/table.h, include/table_builder.h**: Lower-level modules that most
-clients probably won't use directly
+1. Make sure you installed everything through Homebrew mentioned in the [OSX build instructions](/docs/build-osx.md)
+2. Use `./configure` with the `--enable-debug` flag
+3. In Qt Creator do "New Project" -> Import Project -> Import Existing Project
+4. Enter "salemcash-qt" as project name, enter src/qt as location
+5. Leave the file selection as it is
+6. Confirm the "summary page"
+7. In the "Projects" tab select "Manage Kits..."
+8. Select the default "Desktop" kit and select "Clang (x86 64bit in /usr/bin)" as compiler
+9. Select LLDB as debugger (you might need to set the path to your installation)
+10. Start debugging with Qt Creator (you might need to the executable to "salemcash-qt" under "Run", which is where you can also add command line arguments)
