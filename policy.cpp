@@ -24,12 +24,12 @@ CAmount GetDustThreshold(const CTxOut& txout, const CFeeRate& dustRelayFeeIn)
     // need a CTxIn of at least 148 bytes to spend:
     // so dust is a spendable txout less than
     // 182*dustRelayFee/1000 (in satoshis).
-    // 546 satoshis at the default rate of 3000 sat/kB.
+    // 364 satoshis at the default rate of 2000 sat/kB.
     // A typical spendable segwit txout is 31 bytes big, and will
     // need a CTxIn of at least 67 bytes to spend:
     // so dust is a spendable txout less than
     // 98*dustRelayFee/1000 (in satoshis).
-    // 294 satoshis at the default rate of 3000 sat/kB.
+    // 196 satoshis at the default rate of 2000 sat/kB.
     if (txout.scriptPubKey.IsUnspendable())
         return 0;
 
@@ -160,8 +160,8 @@ bool IsStandardTx(const CTransaction& tx, std::string& reason, const bool witnes
  */
 bool AreInputsStandard(const CTransaction& tx, const CCashViewCache& mapInputs)
 {
-    if (tx.IsCoinBase())
-        return true; // Coinbases don't use vin normally
+    if (tx.IsCashBase())
+        return true; // Cashbases don't use vin normally
 
     for (unsigned int i = 0; i < tx.vin.size(); i++)
     {
@@ -194,8 +194,8 @@ bool AreInputsStandard(const CTransaction& tx, const CCashViewCache& mapInputs)
 
 bool IsWitnessStandard(const CTransaction& tx, const CCashViewCache& mapInputs)
 {
-    if (tx.IsCoinBase())
-        return true; // Coinbases are skipped
+    if (tx.IsCashBase())
+        return true; // Cashbases are skipped
 
     for (unsigned int i = 0; i < tx.vin.size(); i++)
     {
