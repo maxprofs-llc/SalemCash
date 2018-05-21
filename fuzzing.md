@@ -1,4 +1,4 @@
-Fuzz-testing SalemCash Core
+Fuzz-testing SalemCash Code
 ===========================
 
 A special test harness `test_salemcash_fuzzy` is provided to provide an easy
@@ -20,7 +20,7 @@ export AFLPATH=$PWD
 Instrumentation
 ----------------
 
-To build the SalemCash Core using AFL instrumentation (this assumes that the
+To build the SalemCash source code using AFL instrumentation (this assumes that the
 `AFLPATH` was set as above):
 ```
 ./configure --disable-ccache --disable-shared --enable-tests CC=${AFLPATH}/afl-gcc CXX=${AFLPATH}/afl-g++
@@ -35,7 +35,7 @@ in.
 The fuzzing can be sped up significantly (~200x) by using `afl-clang-fast` and
 `afl-clang-fast++` in place of `afl-gcc` and `afl-g++` when compiling. When
 compiling using `afl-clang-fast`/`afl-clang-fast++` the resulting
-`test_bitcoin_fuzzy` binary will be instrumented in such a way that the AFL
+`test_Salemcash_fuzzy` binary will be instrumented in such a way that the AFL
 features "persistent mode" and "deferred forkserver" can be used. See
 https://github.com/mcarpenter/afl/tree/master/llvm_mode for details.
 
@@ -65,7 +65,7 @@ Fuzzing
 
 To start the actual fuzzing use:
 ```
-$AFLPATH/afl-fuzz -i ${AFLIN} -o ${AFLOUT} -m52 -- test/test_bitcoin_fuzzy
+$AFLPATH/afl-fuzz -i ${AFLIN} -o ${AFLOUT} -m52 -- test/test_salemcash_fuzzy
 ```
 
 You may have to change a few kernel parameters to test optimally - `afl-fuzz`

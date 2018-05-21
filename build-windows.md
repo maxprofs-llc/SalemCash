@@ -1,12 +1,12 @@
 WINDOWS BUILD NOTES
 ====================
 
-Below are some notes on how to build Bitcoin Core for Windows.
+Below are some notes on how to build the SalemCash for Windows.
 
-The options known to work for building Bitcoin Core on Windows are:
+The options known to work for building the SalemCash on Windows are:
 
 * On Linux using the [Mingw-w64](https://mingw-w64.org/doku.php) cross compiler tool chain. Ubuntu Trusty 14.04 is recommended
-and is the platform used to build the Bitcoin Core Windows release binaries.
+and is the platform used to build the SalemCash blockchain for the Windows release binaries.
 * On Windows using [Windows
 Subsystem for Linux (WSL)](https://msdn.microsoft.com/commandline/wsl/about) and the Mingw-w64 cross compiler tool chain.
 
@@ -52,7 +52,7 @@ Cross-compilation for Ubuntu and Windows Subsystem for Linux
 ------------------------------------------------------------
 
 At the time of writing the Windows Subsystem for Linux installs Ubuntu Xenial 16.04. The Mingw-w64 package
-for Ubuntu Xenial does not produce working executables for some of the Bitcoin Core applications.
+for Ubuntu Xenial does not produce working executables for some of the Salemcash Core applications.
 It is possible to build on Ubuntu Xenial by installing the cross compiler packages from Ubuntu Zesty, see the steps below.
 Building on Ubuntu Zesty 17.04 up to 17.10 has been verified to work.
 
@@ -99,8 +99,8 @@ Ubuntu Zesty 17.04 <sup>[2](#footnote2)</sup>:
 
 Once the tool chain is installed the build steps are common:
 
-Note that for WSL the Bitcoin Core source path MUST be somewhere in the default mount file system, for
-example /usr/src/bitcoin, AND not under /mnt/d/. If this is not the case the dependency autoconf scripts will fail.
+Note that for WSL the SalemCash source path MUST be somewhere in the default mount file system, for
+example /usr/src/salemcash, AND not under /mnt/d/. If this is not the case the dependency autoconf scripts will fail.
 This means you cannot use a directory that located directly on the host Windows file system to perform the build.
 
 Acquire the source in the usual way:
@@ -127,8 +127,8 @@ For Ubuntu Xenial 16.04, Ubuntu Zesty 17.04 and Windows Subsystem for Linux <sup
 
     sudo update-alternatives --config i686-w64-mingw32-g++  # Set the default mingw32 g++ compiler option to posix.
 
-Note that for WSL the Bitcoin Core source path MUST be somewhere in the default mount file system, for
-example /usr/src/bitcoin, AND not under /mnt/d/. If this is not the case the dependency autoconf scripts will fail.
+Note that for WSL the SalemCash source path MUST be somewhere in the default mount file system, for
+example /usr/src/salemcash, AND not under /mnt/d/. If this is not the case the dependency autoconf scripts will fail.
 This means you cannot use a directory that located directly on the host Windows file system to perform the build.
 
 Acquire the source in the usual way:
@@ -155,9 +155,9 @@ Installation
 After building using the Windows subsystem it can be useful to copy the compiled
 executables to a directory on the windows drive in the same directory structure
 as they appear in the release `.zip` archive. This can be done in the following
-way. This will install to `c:\workspace\bitcoin`, for example:
+way. This will install to `c:\workspace\salemcash`, for example:
 
-    make install DESTDIR=/mnt/c/workspace/bitcoin
+    make install DESTDIR=/mnt/c/workspace/salemcash
 
 Footnotes
 ---------

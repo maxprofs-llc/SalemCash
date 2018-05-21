@@ -1,9 +1,9 @@
 (note: this is a temporary file, to be added-to by anybody, and moved to
 release-notes at release time)
 
-SalemCash Core version *version* is now available from:
+SalemCash version 1.0.1 *version* is now available from:
 
-  <https://salemcashcore.org/bin/salemcash-core-*version*/>
+  <http://salemcash.org/download>
 
 This is a new major version release, including new features, various bugfixes
 and performance improvements, as well as updated translations.
@@ -14,7 +14,7 @@ Please report bugs using the issue tracker at GitHub:
 
 To receive security and update notifications, please subscribe to:
 
-  <https://salemcashcore.org/en/list/announcements/join/>
+  <http://salemcash.org/en/list/announcements/join/>
 
 How to Upgrade
 ==============

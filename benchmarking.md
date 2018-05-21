@@ -1,12 +1,12 @@
 Benchmarking
 ============
 
-SalemCash Core has an internal benchmarking framework, with benchmarks
+The SalemCash has an internal benchmarking framework, with benchmarks
 for cryptographic algorithms such as SHA1, SHA256, SHA512 and RIPEMD160. As well as the rolling bloom filter.
 
 Running
 --------
-After compiling SalemCash-core, the benchmarks can be run with:
+After compiling the SalemCash cryptocurrency, the benchmarks can be run with:
 
     src/bench/bench_SalemCash
 
@@ -18,8 +18,8 @@ Base58Decode, 5, 800000, 122.833, 3.0467e-05, 3.11732e-05, 3.06304e-05
 Base58Encode, 5, 470000, 137.094, 5.81061e-05, 5.85109e-05, 5.84462e-05
 BenchLockedPool, 5, 530, 34.2023, 0.0128247, 0.0129613, 0.0129026
 CCheckQueueSpeedPrevectorJob, 5, 1400, 26.1762, 0.00365048, 0.00388629, 0.00367108
-CCoinsCaching, 5, 170000, 48.1074, 5.60229e-05, 5.72316e-05, 5.66214e-05
-CoinSelection, 5, 650, 34.6426, 0.0105801, 0.0107699, 0.010664
+CCashCaching, 5, 170000, 48.1074, 5.60229e-05, 5.72316e-05, 5.66214e-05
+CashSelection, 5, 650, 34.6426, 0.0105801, 0.0107699, 0.010664
 DeserializeAndCheckBlockTest, 5, 160, 39.2084, 0.0483662, 0.0494199, 0.0490138
 DeserializeBlockTest, 5, 130, 23.8129, 0.0357731, 0.0373763, 0.0365858
 FastRandom_1bit, 5, 440000000, 38.1609, 1.72974e-08, 1.73882e-08, 1.73478e-08
@@ -40,16 +40,16 @@ VerifyScriptBench, 5, 6300, 9.02493, 0.000285566, 0.000288433, 0.000286175
 ```
 
 Help
----------------------
+----
 `-?` will print a list of options and exit:
 
     src/bench/bench_SalemCash -?
 
 Notes
----------------------
+-----
 More benchmarks are needed for, in no particular order:
 - Script Validation
-- CCoinDBView caching
-- Coins database
+- CCashDBView caching
+- Cash database
 - Memory pool
-- Wallet coin selection
+- Wallet cash selection

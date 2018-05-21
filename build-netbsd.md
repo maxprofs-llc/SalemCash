@@ -1,5 +1,5 @@
 NetBSD build guide
-======================
+==================
 (updated for NetBSD 7.0)
 
 This guide describes how to build SalemCashd and command-line utilities on NetBSD.
@@ -7,7 +7,7 @@ This guide describes how to build SalemCashd and command-line utilities on NetBS
 This guide does not contain instructions for building the GUI.
 
 Preparation
--------------
+-----------
 
 You will need the following modules, which can be installed via pkgsrc or pkgin:
 
@@ -30,7 +30,7 @@ git clone https://github.com/PastorOmbura/SalemCash
 
 See [dependencies.md](dependencies.md) for a complete overview.
 
-### Building SalemCash Core
+### Building the SalemCash
 
 **Important**: Use `gmake` (the non-GNU `make` will exit with an error).
 

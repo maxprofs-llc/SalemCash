@@ -1,4 +1,4 @@
 Gitian building
 ================
 
-This file was moved to [the SalemCash Core documentation repository](https://github.com/salemcash-core/docs/blob/master/gitian-building.md) at [https://github.com/salemcash-core/docs](https://github.com/salemcash-core/docs).
+This file was moved to [the SalemCash documentation repository](https://github.com/PastorOmbura/salemcash/docs/blob/master/gitian-building.md) at [https://github.com/PastorOmbura/salemcash/docs].

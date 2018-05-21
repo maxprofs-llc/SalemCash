@@ -1,5 +1,5 @@
 Mac OS X Build Instructions and Notes
-====================================
+=====================================
 The commands in this guide should be executed in a Terminal application.
 The built-in one is located in `/Applications/Utilities/Terminal.app`.
 
@@ -40,17 +40,15 @@ from the root of the repository.
 
 **Note**: You only need Berkeley DB if the wallet is enabled (see the section *Disable-Wallet mode* below).
 
-Build SalemCash Core
---------------------
+Build the SalemCash Source Code
+-------------------------------
 
-1. Clone the bitcoin source code and cd into `bitcoin`
+1. Clone the SalemCash source code and cd into `salemcash`
 
         git clone https://github.com/PastorOmbura/SalemCash
-        cd bitcoin
+        cd salemcash
 
-2.  Build the SalemCash-core:
-
-    Configure and build the headless bitcoin binaries as well as the GUI (if Qt is found).
+2.  Configure and build the headless salemcash binaries as well as the GUI (if Qt is found).
 
     You can disable the GUI build by passing `--without-gui` to configure.
 
@@ -69,22 +67,22 @@ Build SalemCash Core
 Running
 -------
 
-The SalemCash Core is now available at `./src/SalemCashd`
+The SalemCash blockchain is now available at `./src/SalemCashd`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=bitcoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/PastorOmbura/SalemCash.conf"
+    echo -e "rpcuser=salemcashrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/PastorOmbura/SalemCash.conf"
 
     chmod 600 "/Users/${USER}/Library/Application Support/PastorOmbura/SalemCash.conf"
 
-The first time you run bitcoind, it will start downloading the blockchain. This process could take several hours.
+The first time you run the salemcashd, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
     tail -f $HOME/Library/Application\ Support/PastorOmbura/SalemCash/debug.log
 
 Other commands:
--------
+--------------
 
     ./src/salemcashd -daemon # Starts the SalemCash daemon.
     ./src/SalemCash-cli --help # Outputs a list of command-line options.

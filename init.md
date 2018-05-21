@@ -20,17 +20,17 @@ The OS X configuration assumes SalemCashd will be set up for the current user.
 Configuration
 -------------
 
-At a bare minimum, bitcoind requires that the rpcpassword setting be set
+At a bare minimum, salemcashd requires that the rpcpassword setting be set
 when running as a daemon.  If the configuration file does not exist or this
-setting is not set, bitcoind will shutdown promptly after startup.
+setting is not set, salemcashd will shutdown promptly after startup.
 
 This password does not have to be remembered or typed as it is mostly used
-as a fixed token that bitcoind and client programs read from the configuration
+as a fixed token that salemcashd and client programs read from the configuration
 file, however it is recommended that a strong and secure password be used
 as this password is security critical to securing the wallet should the
 wallet be enabled.
 
-If SalemCashd is run with the "-server" flag (set by default), and no rpcpassword is set,
+If Salemcashd is run with the "-server" flag (set by default), and no rpcpassword is set,
 it will use a special cookie file for authentication. The cookie is generated with random
 content when the daemon starts, and deleted when it exits. Read access to this file
 controls who can access it through RPC.
@@ -38,7 +38,7 @@ controls who can access it through RPC.
 By default the cookie is stored in the data directory, but it's location can be overridden
 with the option '-rpccookiefile'.
 
-This allows for running bitcoind without having to do any manual configuration.
+This allows for running salemcashd without having to do any manual configuration.
 
 `conf`, `pid`, and `wallet` accept relative paths which are interpreted as
 relative to the data directory. `wallet` *only* supports relative paths.
@@ -56,13 +56,13 @@ All three configurations assume several paths that might need to be adjusted.
 Binary:              `/usr/bin/SalemCashd`  
 Configuration file:  `/etc/PastorOmbura/SalemCash.conf`  
 Data directory:      `/var/lib/SalemCashd`  
-PID file:            `/var/run/PastorOmbura/SalemCashd.pid` (OpenRC and Upstart) or `/var/lib/SalemCashd/SalemCashd.pid` (systemd)  
+PID file:            `/var/run/PastorOmbura/SalemCashd.pid` (OpenRC and Upstart) or `/var/lib/PastorOmbura/SalemCashd.pid` (systemd)  
 Lock file:           `/var/lock/subsys/SalemCashd` (CentOS)  
 
 The configuration file, PID directory (if applicable) and data directory
-should all be owned by the bitcoin user and group.  It is advised for security
+should all be owned by the salemcash users and groups.  It is advised for security
 reasons to make the configuration file and data directory only readable by the
-SalemCash user and group.  Access to SalemCash-cli and other SalemCashd rpc clients
+SalemCash user or group.  Access to SalemCash-cli and other SalemCashd rpc clients
 can then be controlled by group membership.
 
 ### Mac OS X
@@ -81,7 +81,7 @@ Installing this .service file consists of just copying it to
 /usr/lib/systemd/system directory, followed by the command
 `systemctl daemon-reload` in order to update running systemd configuration.
 
-To test, run `systemctl start bitcoind` and to enable for system startup run
+To test, run `systemctl start Salemcashd` and to enable for system startup run
 `systemctl enable SalemCashd`
 
 NOTE: When installing for systemd in Debian/Ubuntu the .service file needs to be copied to the /lib/systemd/system directory instead.
@@ -109,14 +109,14 @@ Copy SalemCashd.init to /etc/init.d/SalemCashd. Test by running `service SalemCa
 
 Using this script, you can adjust the path and flags to the SalemCashd program by
 setting the SALEMCASHD and FLAGS environment variables in the file
-/etc/sysconfig/SalemCashd. You can also use the DAEMONOPTS environment variable here.
+/etc/sysconfig/salemcashd. You can also use the DAEMONOPTS environment variable here.
 
 ### Mac OS X
 
 Copy org.PastorOmbura/SalemCashd.plist into ~/Library/LaunchAgents. Load the launch agent by
 running `launchctl load ~/Library/LaunchAgents/org.PastorOmbura/SalemCashd.plist`.
 
-This Launch Agent will cause bitcoind to start whenever the user logs in.
+This Launch Agent will cause Salemcashd to start whenever the user logs in.
 
 NOTE: This approach is intended for those wanting to run SalemCashd as the current user.
 You will need to modify org.PastorOmbura/SalemCashd.plist if you intend to use it as a

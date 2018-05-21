@@ -1,7 +1,7 @@
 Translation Strings Policy
 ===========================
 
-This document provides guidelines for internationalization of the SalemCash Core software.
+This document provides guidelines for internationalization of the SalemCash software.
 
 How to translate?
 ------------------
