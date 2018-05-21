@@ -132,7 +132,6 @@ private:
 };
 }
 
-
 // BENCHMARK(foo, num_iters_for_one_second) expands to:  benchmark::BenchRunner bench_11foo("foo", num_iterations);
 // Choose a num_iters_for_one_second that takes roughly 1 second. The goal is that all benchmarks should take approximately
 // the same time, and scaling factor can be used that the total time is appropriate for your system.

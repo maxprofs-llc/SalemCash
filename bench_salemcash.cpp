@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The SalemCash Core developers
+// Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -54,7 +54,6 @@ main(int argc, char** argv)
     bool is_list_only = gArgs.GetBoolArg("-list", false);
 
     double scaling_factor = boost::lexical_cast<double>(scaling_str);
-
 
     std::unique_ptr<benchmark::Printer> printer(new benchmark::ConsolePrinter());
     std::string printer_arg = gArgs.GetArg("-printer", DEFAULT_BENCH_PRINTER);

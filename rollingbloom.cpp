@@ -6,6 +6,7 @@
 
 #include <bench/bench.h>
 #include <bloom.h>
+using namespace std;
 
 static void RollingBloom(benchmark::State& state)
 {

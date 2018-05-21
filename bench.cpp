@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <regex>
 #include <numeric>
+using namespace std;
 
 void benchmark::ConsolePrinter::header()
 {
@@ -81,7 +82,6 @@ void benchmark::PlotlyPrinter::footer()
               << "Plotly.newPlot('myDiv', data, layout);"
               << "</script></body></html>";
 }
-
 
 benchmark::BenchRunner::BenchmarkMap& benchmark::BenchRunner::benchmarks()
 {

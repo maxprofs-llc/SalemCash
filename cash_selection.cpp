@@ -4,7 +4,7 @@
 
 #include <bench/bench.h>
 #include <wallet/wallet.h>
-#include <wallet/coinselection.h>
+#include <wallet/cashselection.h>
 
 #include <set>
 
@@ -21,7 +21,7 @@ static void addCash(const CAmount& nValue, const CWallet& wallet, std::vector<CO
 
     int nAge = 6 * 24;
     COutput output(wtx, nInput, nAge, true /* spendable */, true /* solvable */, true /* safe */);
-    vCoins.push_back(output);
+    vCash.push_back(output);
 }
 
 // Simple benchmark for cash wallet selection. Note that it maybe be necessary
@@ -30,7 +30,7 @@ static void addCash(const CAmount& nValue, const CWallet& wallet, std::vector<CO
 // the hardest, as you need a wider selection of scenarios, just testing the
 // same one over and over isn't too useful. Generating random isn't useful
 // either for measurements."
-// (https://github.com/PastorOmbura/SalemCash/issues/7883#issuecomment-224807484)
+// see(https://github.com/PastorOmbura/SalemCash/issues/7883#issuecomment-224807484)
 static void CashSelection(benchmark::State& state)
 {
     const CWallet wallet("dummy", CWalletDBWrapper::CreateDummy());
@@ -89,7 +89,7 @@ static void BnBExhaustion(benchmark::State& state)
 {
     // Setup
     std::vector<CInputCash> utxo_pool;
-    CoinSet selection;
+    CashSet selection;
     CAmount value_ret = 0;
     CAmount not_input_fees = 0;
 
