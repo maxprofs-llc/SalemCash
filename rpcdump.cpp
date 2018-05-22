@@ -119,7 +119,6 @@ UniValue importprivkey(const JSONRPCRequest& request)
             + HelpExampleRpc("importprivkey", "\"mykey\", \"testing\", false")
         );
 
-
     WalletRescanReserver reserver(pwallet);
     bool fRescan = true;
     {
@@ -268,7 +267,6 @@ UniValue importaddress(const JSONRPCRequest& request)
             "\nAs a JSON-RPC call\n"
             + HelpExampleRpc("importaddress", "\"myscript\", \"testing\", false")
         );
-
 
     std::string strLabel;
     if (!request.params[1].isNull())
@@ -442,7 +440,6 @@ UniValue importpubkey(const JSONRPCRequest& request)
             "\nAs a JSON-RPC call\n"
             + HelpExampleRpc("importpubkey", "\"mypubkey\", \"testing\", false")
         );
-
 
     std::string strLabel;
     if (!request.params[1].isNull())
@@ -718,7 +715,7 @@ UniValue dumpwallet(const JSONRPCRequest& request)
     std::sort(vKeyBirth.begin(), vKeyBirth.end());
 
     // produce output
-    file << strprintf("# Wallet dump created by Bitcoin %s\n", CLIENT_BUILD);
+    file << strprintf("# Wallet dump created by SalemCash %s\n", CLIENT_BUILD);
     file << strprintf("# * Created on %s\n", FormatISO8601DateTime(GetTime()));
     file << strprintf("# * Best block at time of backup was %i (%s),\n", chainActive.Height(), chainActive.Tip()->GetBlockHash().ToString());
     file << strprintf("#   mined on %s\n", FormatISO8601DateTime(chainActive.Tip()->GetBlockTime()));
@@ -1234,7 +1231,7 @@ UniValue importmulti(const JSONRPCRequest& mainRequest)
                             strprintf("Rescan failed for key with creation timestamp %d. There was an error reading a "
                                       "block from time %d, which is after or within %d seconds of key creation, and "
                                       "could contain transactions pertaining to the key. As a result, transactions "
-                                      "and coins using this key may not appear in the wallet. This error could be "
+                                      "and the SalemCash using this key may not appear in the wallet. This error could be "
                                       "caused by pruning or data corruption (see salemcashd log for details) and could "
                                       "be dealt with by downloading and rescanning the relevant blocks (see -reindex "
                                       "and -rescan options).",

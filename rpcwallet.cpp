@@ -56,7 +56,7 @@ CWallet *GetWalletForJSONRPCRequest(const JSONRPCRequest& request)
 std::string HelpRequiringPassphrase(CWallet * const pwallet)
 {
     return pwallet && pwallet->IsCrypted()
-        ? "\nRequires wallet passphrase to be set with walletpassphrase call."
+        ? "\nRequires wallet passphrase to be set with walletpassphrase call.\n"
         : "";
 }
 
@@ -88,7 +88,7 @@ void WalletTxToJSON(const CWalletTx& wtx, UniValue& entry)
 {
     int confirms = wtx.GetDepthInMainChain();
     entry.pushKV("confirmations", confirms);
-    if (wtx.IsCoinBase())
+    if (wtx.IsCashBase())
         entry.pushKV("generated", true);
     if (confirms > 0)
     {
@@ -185,7 +185,6 @@ UniValue getnewaddress(const JSONRPCRequest& request)
 
     return EncodeDestination(dest);
 }
-
 
 CTxDestination GetLabelDestination(CWallet* const pwallet, const std::string& label, bool bForceNew=false)
 {
@@ -292,7 +291,7 @@ UniValue setlabel(const JSONRPCRequest& request)
             "setlabel \"address\" \"label\"\n"
             "\nSets the label associated with the given address.\n"
             "\nArguments:\n"
-            "1. \"address\"         (string, required) The bitcoin address to be associated with a label.\n"
+            "1. \"address\"         (string, required) The Salemcash address to be associated with a label.\n"
             "2. \"label\"           (string, required) The label to assign the address to.\n"
             "\nExamples:\n"
             + HelpExampleCli("setlabel", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\" \"tabby\"")
@@ -464,7 +463,7 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
             "                             to which you're sending the transaction. This is not part of the \n"
             "                             transaction, just kept in your wallet.\n"
             "5. subtractfeefromamount  (boolean, optional, default=false) The fee will be deducted from the amount being sent.\n"
-            "                             The recipient will receive less bitcoins than you enter in the amount field.\n"
+            "                             The recipient will receive less Salemcashs than you enter in the amount field.\n"
             "6. replaceable            (boolean, optional) Allow this transaction to be replaced by a transaction with higher fees via BIP 125\n"
             "7. conf_target            (numeric, optional) Confirmation target (in blocks)\n"
             "8. \"estimate_mode\"      (string, optional, default=UNSET) The fee estimate mode, must be one of:\n"
@@ -706,7 +705,7 @@ UniValue getreceivedbyaddress(const JSONRPCRequest& request)
     CAmount nAmount = 0;
     for (const std::pair<uint256, CWalletTx>& pairWtx : pwallet->mapWallet) {
         const CWalletTx& wtx = pairWtx.second;
-        if (wtx.IsCoinBase() || !CheckFinalTx(*wtx.tx))
+        if (wtx.IsCashBase() || !CheckFinalTx(*wtx.tx))
             continue;
 
         for (const CTxOut& txout : wtx.tx->vout)
@@ -717,7 +716,6 @@ UniValue getreceivedbyaddress(const JSONRPCRequest& request)
 
     return  ValueFromAmount(nAmount);
 }
-
 
 UniValue getreceivedbylabel(const JSONRPCRequest& request)
 {
@@ -767,7 +765,7 @@ UniValue getreceivedbylabel(const JSONRPCRequest& request)
     CAmount nAmount = 0;
     for (const std::pair<uint256, CWalletTx>& pairWtx : pwallet->mapWallet) {
         const CWalletTx& wtx = pairWtx.second;
-        if (wtx.IsCoinBase() || !CheckFinalTx(*wtx.tx))
+        if (wtx.IsCashBase() || !CheckFinalTx(*wtx.tx))
             continue;
 
         for (const CTxOut& txout : wtx.tx->vout)
@@ -887,7 +885,6 @@ UniValue getunconfirmedbalance(const JSONRPCRequest &request)
     return ValueFromAmount(pwallet->GetUnconfirmedBalance());
 }
 
-
 UniValue movecmd(const JSONRPCRequest& request)
 {
     CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
@@ -938,7 +935,6 @@ UniValue movecmd(const JSONRPCRequest& request)
     return true;
 }
 
-
 UniValue sendfrom(const JSONRPCRequest& request)
 {
     CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
@@ -953,7 +949,7 @@ UniValue sendfrom(const JSONRPCRequest& request)
             + HelpRequiringPassphrase(pwallet) + "\n"
             "\nArguments:\n"
             "1. \"fromaccount\"       (string, required) The name of the account to send funds from. May be the default account using \"\".\n"
-            "                       Specifying an account does not influence coin selection, but it does associate the newly created\n"
+            "                       Specifying an account does not influence the cash selection, but it does associate the newly created\n"
             "                       transaction with the account, so the account's balance computation and transaction history can reflect\n"
             "                       the spend.\n"
             "2. \"toaddress\"         (string, required) The SalemCash address to send funds to.\n"
@@ -1012,7 +1008,6 @@ UniValue sendfrom(const JSONRPCRequest& request)
     CTransactionRef tx = SendMoney(pwallet, dest, nAmount, false, no_cash_control, std::move(mapValue), std::move(strAccount));
     return tx->GetHash().GetHex();
 }
-
 
 UniValue sendmany(const JSONRPCRequest& request)
 {
@@ -1363,7 +1358,7 @@ UniValue addwitnessaddress(const JSONRPCRequest& request)
             throw JSONRPCError(RPC_WALLET_ERROR, "Cannot convert between witness address types");
         }
     } else {
-        pwallet->AddCScript(witprogram); // Implicit for single-key now, but necessary for multisig and for compatibility with older software
+        pwallet->AddCScript(witprogram); // Implicit for single-key now, but necessary for multisig and for compatibility with older software.
         pwallet->SetAddressBook(w.result, "", "receive");
     }
 
@@ -1416,7 +1411,7 @@ UniValue ListReceived(CWallet * const pwallet, const UniValue& params, bool by_l
     for (const std::pair<uint256, CWalletTx>& pairWtx : pwallet->mapWallet) {
         const CWalletTx& wtx = pairWtx.second;
 
-        if (wtx.IsCoinBase() || !CheckFinalTx(*wtx.tx))
+        if (wtx.IsCashBase() || !CheckFinalTx(*wtx.tx))
             continue;
 
         int nDepth = wtx.GetDepthInMainChain();
@@ -1698,7 +1693,7 @@ void ListTransactions(CWallet* const pwallet, const CWalletTx& wtx, const std::s
                 }
                 entry.pushKV("account", account);
                 MaybePushAddress(entry, r.destination);
-                if (wtx.IsCoinBase())
+                if (wtx.IsCashBase())
                 {
                     if (wtx.GetDepthInMainChain() < 1)
                         entry.pushKV("category", "orphan");
@@ -2283,7 +2278,6 @@ UniValue backupwallet(const JSONRPCRequest& request)
     return NullUniValue;
 }
 
-
 UniValue keypoolrefill(const JSONRPCRequest& request)
 {
     CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
@@ -2322,7 +2316,6 @@ UniValue keypoolrefill(const JSONRPCRequest& request)
 
     return NullUniValue;
 }
-
 
 static void LockWallet(CWallet* pWallet)
 {
@@ -2403,7 +2396,6 @@ UniValue walletpassphrase(const JSONRPCRequest& request)
     return NullUniValue;
 }
 
-
 UniValue walletpassphrasechange(const JSONRPCRequest& request)
 {
     CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
@@ -2452,7 +2444,6 @@ UniValue walletpassphrasechange(const JSONRPCRequest& request)
     return NullUniValue;
 }
 
-
 UniValue walletlock(const JSONRPCRequest& request)
 {
     CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
@@ -2489,7 +2480,6 @@ UniValue walletlock(const JSONRPCRequest& request)
 
     return NullUniValue;
 }
-
 
 UniValue encryptwallet(const JSONRPCRequest& request)
 {
@@ -2548,7 +2538,7 @@ UniValue encryptwallet(const JSONRPCRequest& request)
     // slack space in .dat files; that is bad if the old data is
     // unencrypted private keys. So:
     StartShutdown();
-    return "wallet encrypted; Bitcoin server stopping, restart to run with encrypted wallet. The keypool has been flushed and a new HD seed was generated (if you are using HD). You need to make a new backup.";
+    return "wallet encrypted; Salemcash server stopping, restart to run with encrypted wallet. The keypool has been flushed and a new HD seed was generated (if you are using HD). You need to make a new backup.";
 }
 
 UniValue lockunspent(const JSONRPCRequest& request)
@@ -2564,7 +2554,7 @@ UniValue lockunspent(const JSONRPCRequest& request)
             "\nUpdates list of temporarily unspendable outputs.\n"
             "Temporarily lock (unlock=false) or unlock (unlock=true) specified transaction outputs.\n"
             "If no transaction outputs are specified when unlocking then all current locked transaction outputs are unlocked.\n"
-            "A locked transaction output will not be chosen by automatic coin selection, when spending the SalemCash.\n"
+            "A locked transaction output will not be chosen by automatic cash selection, when spending the SalemCash.\n"
             "Locks are stored in memory only. Nodes start with zero locked outputs, and the locked output list\n"
             "is always cleared (by virtue of process exit) when a node stops or fails.\n"
             "Also see the listunspent call\n"
@@ -2656,7 +2646,7 @@ UniValue lockunspent(const JSONRPCRequest& request)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, expected unspent output");
         }
 
-        const bool is_locked = pwallet->IsLockedCoin(outpt.hash, outpt.n);
+        const bool is_locked = pwallet->IsLockedCash(outpt.hash, outpt.n);
 
         if (fUnlock && !is_locked) {
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, expected locked output");
@@ -2715,7 +2705,7 @@ UniValue listlockunspent(const JSONRPCRequest& request)
     LOCK2(cs_main, pwallet->cs_wallet);
 
     std::vector<COutPoint> vOutpts;
-    pwallet->ListLockedCoins(vOutpts);
+    pwallet->ListLockedCash(vOutpts);
 
     UniValue ret(UniValue::VARR);
 
@@ -2906,7 +2896,7 @@ UniValue listunspent(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. minconf          (numeric, optional, default=1) The minimum confirmations to filter\n"
             "2. maxconf          (numeric, optional, default=9999999) The maximum confirmations to filter\n"
-            "3. \"addresses\"      (string) A json array of bitcoin addresses to filter\n"
+            "3. \"addresses\"      (string) A json array of Salemcash addresses to filter\n"
             "    [\n"
             "      \"address\"     (string) SalemCash address\n"
             "      ,...\n"
@@ -3014,7 +3004,7 @@ UniValue listunspent(const JSONRPCRequest& request)
     std::vector<COutput> vecOutputs;
     LOCK2(cs_main, pwallet->cs_wallet);
 
-    pwallet->AvailableCoins(vecOutputs, !include_unsafe, nullptr, nMinimumAmount, nMaximumAmount, nMinimumSumAmount, nMaximumCount, nMinDepth, nMaxDepth);
+    pwallet->AvailableCash(vecOutputs, !include_unsafe, nullptr, nMinimumAmount, nMaximumAmount, nMinimumSumAmount, nMaximumCount, nMinDepth, nMaxDepth);
     for (const COutput& out : vecOutputs) {
         CTxDestination address;
         const CScript& scriptPubKey = out.tx->tx->vout[out.i].scriptPubKey;
@@ -3137,7 +3127,7 @@ UniValue fundrawtransaction(const JSONRPCRequest& request)
     if (!request.params[1].isNull()) {
       if (request.params[1].type() == UniValue::VBOOL) {
         // backward compatibility bool only fallback
-        coinControl.fAllowWatchOnly = request.params[1].get_bool();
+        cashControl.fAllowWatchOnly = request.params[1].get_bool();
       }
       else {
         RPCTypeCheck(request.params, {UniValue::VSTR, UniValue::VOBJ, UniValue::VBOOL});
@@ -3210,7 +3200,7 @@ UniValue fundrawtransaction(const JSONRPCRequest& request)
             if (options.exists("feeRate")) {
                 throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot specify both estimate_mode and feeRate");
             }
-            if (!FeeModeFromString(options["estimate_mode"].get_str(), coinControl.m_fee_mode)) {
+            if (!FeeModeFromString(options["estimate_mode"].get_str(), cashControl.m_fee_mode)) {
                 throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid estimate_mode parameter");
             }
         }
@@ -3426,7 +3416,6 @@ UniValue bumpfee(const JSONRPCRequest& request)
 
     LOCK2(cs_main, pwallet->cs_wallet);
     EnsureWalletIsUnlocked(pwallet);
-
 
     std::vector<std::string> errors;
     CAmount old_fee;

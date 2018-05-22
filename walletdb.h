@@ -164,8 +164,9 @@ public:
     explicit CWalletDB(CWalletDBWrapper& dbw, const char* pszMode = "r+", bool _fFlushOnClose = true) :
         batch(dbw, pszMode, _fFlushOnClose),
         m_dbw(dbw)
-    {
     }
+	
+	{
     CWalletDB(const CWalletDB&) = delete;
     CWalletDB& operator=(const CWalletDB&) = delete;
 
@@ -199,7 +200,7 @@ public:
     bool WriteMinVersion(int nVersion);
 
     /// This writes directly to the database, and will not update the CWallet's cached accounting entries!
-    /// Use wallet.AddAccountingEntry instead, to write *and* update its caches.
+    /// Use wallet. AddAccountingEntry instead, to write *and* update its caches.
     bool WriteAccountingEntry(const uint64_t nAccEntryNum, const CAccountingEntry& acentry);
     bool ReadAccount(const std::string& strAccount, CAccount& account);
     bool WriteAccount(const std::string& strAccount, const CAccount& account);

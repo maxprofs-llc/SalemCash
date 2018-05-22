@@ -16,7 +16,7 @@
 #include <script/sign.h>
 #include <util.h>
 #include <wallet/crypter.h>
-#include <wallet/coinselection.h>
+#include <wallet/cashselection.h>
 #include <wallet/walletdb.h>
 #include <wallet/rpcwallet.h>
 
@@ -47,13 +47,13 @@ static const unsigned int DEFAULT_KEYPOOL_SIZE = 1000;
 //! -paytxfee default
 static const CAmount DEFAULT_TRANSACTION_FEE = 0;
 //! -fallbackfee default
-static const CAmount DEFAULT_FALLBACK_FEE = 20000;
+static const CAmount DEFAULT_FALLBACK_FEE = 4000;
 //! -m_discard_rate default
-static const CAmount DEFAULT_DISCARD_FEE = 10000;
+static const CAmount DEFAULT_DISCARD_FEE = 2000;
 //! -mintxfee default
 static const CAmount DEFAULT_TRANSACTION_MINFEE = 1000;
 //! minimum recommended increment for BIP 125 replacement txs
-static const CAmount WALLET_INCREMENTAL_RELAY_FEE = 5000;
+static const CAmount WALLET_INCREMENTAL_RELAY_FEE = 2000;
 //! Default for -spendzeroconfchange
 static const bool DEFAULT_SPEND_ZEROCONF_CHANGE = true;
 //! Default for -walletrejectlongchains
@@ -68,7 +68,7 @@ static const bool DEFAULT_DISABLE_WALLET = false;
 static const int64_t TIMESTAMP_MIN = 0;
 
 class CBlockIndex;
-class CCoinControl;
+class CCashControl;
 class COutput;
 class CReserveKey;
 class CScript;
@@ -105,7 +105,6 @@ enum class OutputType {
 
 //! Default for -addresstype
 constexpr OutputType DEFAULT_ADDRESS_TYPE{OutputType::P2SH_SEGWIT};
-
 
 /** A key pool entry */
 class CKeyPool
@@ -175,7 +174,6 @@ static inline void ReadOrderPos(int64_t& nOrderPos, mapValue_t& mapValue)
     }
     nOrderPos = atoi64(mapValue["n"].c_str());
 }
-
 
 static inline void WriteOrderPos(const int64_t& nOrderPos, mapValue_t& mapValue)
 {
@@ -260,7 +258,7 @@ public:
     void setAbandoned() { hashBlock = ABANDON_HASH; }
 
     const uint256& GetHash() const { return tx->GetHash(); }
-    bool IsCoinBase() const { return tx->IsCoinBase(); }
+    bool IsCashBase() const { return tx->IsCashBase(); }
 };
 
 //Get the marginal bytes of spending the specified output
@@ -289,7 +287,7 @@ public:
      *     "replaced_by_txid" - txid (as HexStr) of transaction created by
      *                         bumpfee on transaction replaced by bumpfee
      *     "from", "message" - obsolete fields that could be set in UI prior to
-     *                         2011 (removed in commit 4d9b223)
+     *                         2018 (removed in commit 4d9b223)
      *
      * The following keys are serialized in the wallet database, but shouldn't
      * be read or written through the map (they will be temporarily added and
@@ -317,7 +315,7 @@ public:
     unsigned int nTimeSmart;
     /**
      * From me flag is set to 1 for transactions that were created by the wallet
-     * on this bitcoin node, and set to 0 for transactions that were created
+     * on this SalemCash node, and set to 0 for transactions that were created
      * externally and came in through the network or sendrawtransaction RPC.
      */
     char fFromMe;
@@ -516,9 +514,6 @@ public:
     std::string ToString() const;
 };
 
-
-
-
 /** Private key that includes an expiration date in case it never gets used. */
 class CWalletKey
 {
@@ -529,7 +524,6 @@ public:
     std::string strComment;
     //! todo: add something to note what created it (user, getnewaddress, change)
     //!   maybe should have a map<string, string> property map
-
     explicit CWalletKey(int64_t nExpires=0);
 
     ADD_SERIALIZE_METHODS;
@@ -589,7 +583,6 @@ public:
 
         mapValue_t mapValueCopy = mapValue;
         WriteOrderPos(nOrderPos, mapValueCopy);
-
         std::string strCommentCopy = strComment;
         if (!mapValueCopy.empty() || !_ssExtra.empty()) {
             CDataStream ss(s.GetType(), s.GetVersion());
@@ -609,7 +602,6 @@ public:
         }
         //! Note: strAccount is serialized as part of the key, not here.
         s >> nCreditDebit >> nTime >> LIMITED_STRING(strOtherAccount, 65536) >> LIMITED_STRING(strComment, 65536);
-
         size_t nSepPos = strComment.find("\0", 0, 1);
         mapValue.clear();
         if (std::string::npos != nSepPos) {
@@ -663,15 +655,12 @@ private:
     std::atomic<bool> fScanningWallet; //controlled by WalletRescanReserver
     std::mutex mutexScanning;
     friend class WalletRescanReserver;
-
     CWalletDB *pwalletdbEncryption;
 
     //! the current wallet version: clients below this version are not able to load the wallet
     int nWalletVersion;
-
     //! the maximum wallet format version: memory-only variable that specifies to what version this wallet may be upgraded
     int nWalletMaxVersion;
-
     int64_t nNextResend;
     int64_t nLastResend;
     bool fBroadcastTransactions;
@@ -688,7 +677,6 @@ private:
 
     /* Mark a transaction (and its in-wallet descendants) as conflicting with a particular block. */
     void MarkConflicted(const uint256& hashBlock, const uint256& hashTx);
-
     void SyncMetaData(std::pair<TxSpends::iterator, TxSpends::iterator>);
 
     /* Used by TransactionAddedToMemorypool/BlockConnected/Disconnected.
@@ -705,7 +693,6 @@ private:
     std::set<int64_t> setExternalKeyPool;
     int64_t m_max_keypool_index;
     std::map<CKeyID, int64_t> m_pool_key_to_index;
-
     int64_t nTimeFirstKey;
 
     /**
@@ -758,7 +745,7 @@ public:
 
     /**
      * Select a set of cash such that nValueRet >= nTargetValue and at least
-     * all the cash from cashControl are selected; Never select unconfirmed cash
+     * all the cash from the cashControl are selected; Never select unconfirmed cash
      * if they are not ours
      */
     bool SelectCash(const std::vector<COutput>& vAvailableCash, const CAmount& nTargetValue, std::set<CInputCash>& setCashsRet, CAmount& nValueRet,
@@ -852,10 +839,10 @@ public:
      * assembled
      */
     bool SelectCashMinConf(const CAmount& nTargetValue, const CashEligibilityFilter& eligibility_filter, std::vector<COutput> vCash,
-        std::set<CInputCoin>& setCashRet, CAmount& nValueRet, const CashSelectionParams& cash_selection_params, bool& bnb_used) const;
+        std::set<CInputCash>& setCashRet, CAmount& nValueRet, const CashSelectionParams& cash_selection_params, bool& bnb_used) const;
 
     bool IsSpent(const uint256& hash, unsigned int n) const;
-
+	
     bool IsLockedCash(uint256 hash, unsigned int n) const;
     void LockCash(const COutPoint& output);
     void UnlockCash(const COutPoint& output);
@@ -909,7 +896,6 @@ public:
     bool RemoveWatchOnly(const CScript &dest) override;
     //! Adds a watch-only address to the store, without saving it to disk (used by LoadWallet)
     bool LoadWatchOnly(const CScript &dest);
-
     //! Holds a timestamp at which point the wallet is scheduled (externally) to be relocked. Caller must arrange for actual relocking to occur via Lock().
     int64_t nRelockTime;
 
@@ -1057,19 +1043,16 @@ public:
 
     //! signify that a particular wallet feature is now used. this may change nWalletVersion and nWalletMaxVersion if those are lower
     bool SetMinVersion(enum WalletFeature, CWalletDB* pwalletdbIn = nullptr, bool fExplicit = false);
-
     //! change which version we're allowed to upgrade to (note that this does not immediately imply upgrading to that format)
     bool SetMaxVersion(int nVersion);
-
+	
     //! get the current wallet format (the oldest client version guaranteed to understand this wallet)
     int GetVersion() { LOCK(cs_wallet); return nWalletVersion; }
-
+	
     //! Get wallet transactions that conflict with given transaction (spend same outputs)
     std::set<uint256> GetConflicts(const uint256& txid) const;
-
     //! Check if a given transaction has any of its outputs spent by another transaction in the wallet
     bool HasWalletSpend(const uint256& txid) const;
-
     //! Flush wallet (bitdb flush)
     void Flush(bool shutdown=false);
 
@@ -1097,18 +1080,16 @@ public:
 
     /** Inquire whether this wallet broadcasts transactions. */
     bool GetBroadcastTransactions() const { return fBroadcastTransactions; }
+	
     /** Set whether this wallet broadcasts transactions. */
     void SetBroadcastTransactions(bool broadcast) { fBroadcastTransactions = broadcast; }
 
     /** Return whether transaction can be abandoned */
     bool TransactionCanBeAbandoned(const uint256& hashTx) const;
-
     /* Mark a transaction (and it in-wallet descendants) as abandoned so its inputs may be respent. */
     bool AbandonTransaction(const uint256& hashTx);
-
     /** Mark a transaction as replaced by another transaction (e.g., BIP 125). */
     bool MarkReplaced(const uint256& originalHash, const uint256& newHash);
-
     /* Initializes the wallet, returns a new CWallet instance or a null pointer in case of an error */
     static CWallet* CreateWalletFromFile(const std::string& name, const fs::path& path);
 
@@ -1117,7 +1098,6 @@ public:
      * Gives the wallet a chance to register repetitive tasks and complete post-init tasks
      */
     void postInitProcess(CScheduler& scheduler);
-
     bool BackupWallet(const std::string& strDest);
 
     /* Set the HD chain model (chain child index counters) */
@@ -1126,7 +1106,6 @@ public:
 
     /* Returns true if HD is enabled */
     bool IsHDEnabled() const;
-
     /* Generates a new HD master key (will not be activated) */
     CPubKey GenerateNewHDMasterKey();
     
@@ -1165,7 +1144,7 @@ public:
     CTxDestination AddAndGetDestinationForScript(const CScript& script, OutputType);
 
     /** Whether a given output is spendable by this wallet */
-    bool OutputEligibleForSpending(const COutput& output, const CoinEligibilityFilter& eligibility_filter) const;
+    bool OutputEligibleForSpending(const COutput& output, const CashEligibilityFilter& eligibility_filter) const;
 };
 
 /** A key allocated from the key pool. */
@@ -1198,7 +1177,6 @@ public:
     void KeepKey();
     void KeepScript() override { KeepKey(); }
 };
-
 
 /** 
  * Account information.

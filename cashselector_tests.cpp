@@ -3,12 +3,12 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "wallet/wallet.h"
-#include "wallet/coinselection.h"
-#include "wallet/coincontrol.h"
+#include "wallet/cashselection.h"
+#include "wallet/cashcontrol.h"
 #include "amount.h"
 #include "primitives/transaction.h"
 #include "random.h"
-#include "test/test_bitcoin.h"
+#include "test/test_salemcash.h"
 #include "wallet/test/wallet_test_fixture.h"
 
 #include <boost/test/unit_test.hpp>
@@ -27,14 +27,14 @@ std::vector<std::unique_ptr<CWalletTx>> wtxn;
 
 typedef std::set<CInputCash> CashSet;
 
-static std::vector<COutput> vCoins;
+static std::vector<COutput> vCash;
 static CWallet testWallet("dummy", CWalletDBWrapper::CreateDummy());
 static CAmount balance = 0;
 
 CashEligibilityFilter filter_standard(1, 6, 0);
 CashEligibilityFilter filter_confirmed(1, 1, 0);
 CashEligibilityFilter filter_standard_extra(6, 6, 0);
-CashSelectionParams coin_selection_params(false, 0, 0, CFeeRate(0), 0);
+CashSelectionParams cash_selection_params(false, 0, 0, CFeeRate(0), 0);
 
 static void add_cash(const CAmount& nValue, int nInput, std::vector<CInputCash>& set)
 {
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(bnb_search_test)
     BOOST_TEST_MESSAGE("Testing known outcomes");
 
     // Empty utxo pool
-    BOOST_CHECK(!SelectCoinsBnB(utxo_pool, 1 * CENT, 0.5 * CENT, selection, value_ret, not_input_fees));
+    BOOST_CHECK(!SelectCashBnB(utxo_pool, 1 * CENT, 0.5 * CENT, selection, value_ret, not_input_fees));
     selection.clear();
 
     // Add utxos
@@ -216,14 +216,14 @@ BOOST_AUTO_TEST_CASE(bnb_search_test)
     }
 
     // Make sure that effective value is working in SelectCashMinConf when BnB is used
-    CashSelectionParams cash_selection_params_bnb(true, 0, 0, CFeeRate(3000), 0);
+    CashSelectionParams cash_selection_params_bnb(true, 0, 0, CFeeRate(2000), 0);
     CashSet setCashRet;
     CAmount nValueRet;
     bool bnb_used;
     empty_wallet();
     add_cash(1);
     vCash.at(0).nInputBytes = 40; // Make sure that it has a negative effective value. The next check should assert if this somehow got through. Otherwise it will fail
-    BOOST_CHECK(!testWallet.SelectCoinsMinConf( 1 * CENT, filter_standard, vCash, setCashRet, nValueRet, cash_selection_params_bnb, bnb_used));
+    BOOST_CHECK(!testWallet.SelectCashMinConf( 1 * CENT, filter_standard, vCash, setCashRet, nValueRet, cash_selection_params_bnb, bnb_used));
 
     // Make sure that we aren't using BnB when there are preset inputs
     empty_wallet();
@@ -254,9 +254,9 @@ BOOST_AUTO_TEST_CASE(knapsack_solver_test)
         // with an empty wallet we can't even pay one cent
         BOOST_CHECK(!testWallet.SelectCashMinConf( 1 * CENT, filter_standard, vCash, setCashRet, nValueRet, cash_selection_params, bnb_used));
 
-        add_cash(1*CENT, 4);        // add a new 1 cent cash
+        add_cash(1*CENT, 4);        // add a new 1 cent of cash
 
-        // with a new 1 cent cash, we still can't find a mature 1 cent
+        // with a new 1 cent of cash, we still can't find a mature 1 cent
         BOOST_CHECK(!testWallet.SelectCashMinConf( 1 * CENT, filter_standard, vCash, setCashRet, nValueRet, cash_selection_params, bnb_used));
 
         // but we can find a new 1 cent
@@ -272,17 +272,17 @@ BOOST_AUTO_TEST_CASE(knapsack_solver_test)
         BOOST_CHECK( testWallet.SelectCashMinConf( 3 * CENT, filter_confirmed, vCash, setCashRet, nValueRet, cash_selection_params, bnb_used));
         BOOST_CHECK_EQUAL(nValueRet, 3 * CENT);
 
-        add_cash(5*CENT);           // add a mature 5 cent cash,
-        add_cash(10*CENT, 3, true); // a new 10 cent cash sent from one of our own addresses
-        add_cash(20*CENT);          // and a mature 20 cent cash
+        add_cash(5*CENT);           // add a mature 5 cent of cash,
+        add_cash(10*CENT, 3, true); // a new 10 cent of cash sent from one of our own addresses
+        add_cash(20*CENT);          // and a mature 20 cent of cash
 
         // now we have new: 1+10=11 (of which 10 was self-sent), and mature: 2+5+20=27.  total = 38
 
         // we can't make 38 cents only if we disallow new cash:
         BOOST_CHECK(!testWallet.SelectCashMinConf(38 * CENT, filter_standard, vCash, setCashRet, nValueRet, cash_selection_params, bnb_used));
-        // we can't even make 37 cents if we don't allow new coins even if they're from us
+        // we can't even make 37 cents if we don't allow new cash even if they're from us
         BOOST_CHECK(!testWallet.SelectCashMinConf(38 * CENT, filter_standard_extra, vCash, setCashRet, nValueRet, cash_selection_params, bnb_used));
-        // but we can make 37 cents if we accept new coins from ourself
+        // but we can make 37 cents if we accept new cash from ourself
         BOOST_CHECK( testWallet.SelectCashMinConf(37 * CENT, filter_standard, vCash, setCashRet, nValueRet, cash_selection_params, bnb_used));
         BOOST_CHECK_EQUAL(nValueRet, 37 * CENT);
         // and we can make 38 cents if we accept all new cash
@@ -324,7 +324,7 @@ BOOST_AUTO_TEST_CASE(knapsack_solver_test)
 
         // now try making 16 cents.  the best smaller cash denominations that can do is 6+7+8 = 21; not as good at the next biggest cash value, 20
         BOOST_CHECK( testWallet.SelectCashMinConf(16 * CENT, filter_confirmed, vCash, setCashRet, nValueRet, cash_selection_params, bnb_used));
-        BOOST_CHECK_EQUAL(nValueRet, 20 * CENT); // we should get 20 in one coin
+        BOOST_CHECK_EQUAL(nValueRet, 100 * CENT); // we should get 100 in a unit cash
         BOOST_CHECK_EQUAL(setCashRet.size(), 1U);
 
         add_cash( 5*CENT); // now we have 5+6+7+8+20+30 = 75 cents total
@@ -332,7 +332,7 @@ BOOST_AUTO_TEST_CASE(knapsack_solver_test)
         // now if we try making 16 cents again, the smaller cash denominations that can make 5+6+7 = 18 cents, better than the next biggest cash value, 20
         BOOST_CHECK( testWallet.SelectCashMinConf(16 * CENT, filter_confirmed, vCash, setCashRet, nValueRet, cash_selection_params, bnb_used));
         BOOST_CHECK_EQUAL(nValueRet, 18 * CENT); // we should get 18 in 3 cash transactions
-        BOOST_CHECK_EQUAL(setCoinsRet.size(), 3U);
+        BOOST_CHECK_EQUAL(setCashRet.size(), 3U);
 
         add_cash( 18*CENT); // now we have 5+6+7+8+18+20+30
 
@@ -356,7 +356,7 @@ BOOST_AUTO_TEST_CASE(knapsack_solver_test)
         BOOST_CHECK_EQUAL(setCashRet.size(), 1U);
 
         BOOST_CHECK( testWallet.SelectCashMinConf(195 * CENT, filter_confirmed, vCash, setCashRet, nValueRet, cash_selection_params, bnb_used));
-        BOOST_CHECK_EQUAL(nValueRet, 2 * COIN);  // we should get 2 SCS in 1 transaction
+        BOOST_CHECK_EQUAL(nValueRet, 2 * CASH);  // we should get 2 SCS in 1 transaction
         BOOST_CHECK_EQUAL(setCashRet.size(), 1U);
 
         // empty the wallet and start again, now with fractions of a cent, to test small change avoidance
@@ -466,7 +466,7 @@ BOOST_AUTO_TEST_CASE(knapsack_solver_test)
             // picking 50 from 100 SCS doesn't depend on the shuffle,
             // but does depend on randomness in the stochastic approximation code
             BOOST_CHECK(testWallet.SelectCashMinConf(50 * CASH, filter_standard, vCash, setCashRet , nValueRet, cash_selection_params, bnb_used));
-            BOOST_CHECK(testWallet.SelectCoinsMinConf(50 * CASH, filter_standard, vCash, setCashRet2, nValueRet, cash_selection_params, bnb_used));
+            BOOST_CHECK(testWallet.SelectCashMinConf(50 * CASH, filter_standard, vCash, setCashRet2, nValueRet, cash_selection_params, bnb_used));
             BOOST_CHECK(!equal_sets(setCashRet, setCashRet2));
 
             int fails = 0;
@@ -508,7 +508,7 @@ BOOST_AUTO_TEST_CASE(knapsack_solver_test)
 
 BOOST_AUTO_TEST_CASE(ApproximateBestSubset)
 {
-    CoinSet setCashRet;
+    CashSet setCashRet;
     CAmount nValueRet;
     bool bnb_used;
 

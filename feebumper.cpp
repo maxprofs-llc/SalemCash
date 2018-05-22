@@ -1,6 +1,6 @@
 // Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+// file COPYING at http://www.opensource.org/licenses/mit-license.php.
 
 #include <consensus/validation.h>
 #include <wallet/cashcontrol.h>
@@ -16,7 +16,7 @@
 #include <util.h>
 #include <net.h>
 
-//! Check whether transaction has descendant in wallet or mempool, or has been
+//! Checks whether a transaction has a descendant in wallet or mempool, or has been
 //! mined, or conflicts with a mined transaction. Return a feebumper::Result.
 static feebumper::Result PreconditionChecks(const CWallet* wallet, const CWalletTx& wtx, std::vector<std::string>& errors)
 {
@@ -55,7 +55,6 @@ static feebumper::Result PreconditionChecks(const CWallet* wallet, const CWallet
         errors.push_back("Transaction contains inputs that don't belong to this wallet");
         return feebumper::Result::WALLET_ERROR;
     }
-
 
     return feebumper::Result::OK;
 }
@@ -143,7 +142,7 @@ Result CreateTransaction(const CWallet* wallet, const uint256& txid, const CCash
         new_fee = total_fee;
         nNewFeeRate = CFeeRate(total_fee, maxNewTxSize);
     } else {
-        new_fee = GetMinimumFee(maxNewTxSize, coin_control, mempool, ::feeEstimator, nullptr /* FeeCalculation */);
+        new_fee = GetMinimumFee(maxNewTxSize, cash_control, mempool, ::feeEstimator, nullptr /* FeeCalculation */);
         nNewFeeRate = CFeeRate(new_fee, maxNewTxSize);
 
         // New fee rate must be at least old rate + minimum incremental relay rate
@@ -201,7 +200,7 @@ Result CreateTransaction(const CWallet* wallet, const uint256& txid, const CCash
     }
 
     // Mark new tx not replaceable, if requested.
-    if (!coin_control.signalRbf) {
+    if (!cash_control.signalRbf) {
         for (auto& input : mtx.vin) {
             if (input.nSequence < 0xfffffffe) input.nSequence = 0xfffffffe;
         }

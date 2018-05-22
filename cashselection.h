@@ -49,7 +49,7 @@ public:
 
 bool SelectCashBnB(std::vector<CInputCash>& utxo_pool, const CAmount& target_value, const CAmount& cost_of_change, std::set<CInputCash>& out_set, CAmount& value_ret, CAmount not_input_fees);
 
-// Original coin selection algorithm as a fallback
+// Original cash selection algorithm as a fallback
 bool KnapsackSolver(const CAmount& nTargetValue, std::vector<CInputCash>& vCash, std::set<CInputCash>& setCashRet, CAmount& nValueRet);
 
 #endif // SALEMCASH_CASHSELECTION_H

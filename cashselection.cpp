@@ -8,14 +8,15 @@
 
 // Descending order comparator
 struct {
-    bool operator()(const CInputCoin& a, const CInputCoin& b) const
+    bool operator()(const CInputCash& a, const CInputCash& b) const
     {
         return a.effective_value > b.effective_value;
     }
 } descending;
 
 /*
- * This is the Branch and Bound Cash Selection algorithm designed by Murch. It searches for an input
+ * This is the Branch and Bound Coin/Cash Selection algorithm designed by Murch. Note that the SalemCash 
+ * developers opted to use the term "Cash" instead of "coin" in the algorithm. It searches for an input
  * set that can pay for the spending target and does not exceed the spending target by more than the
  * cost of creating and spending a change output. The algorithm uses a depth-first search on a binary
  * tree. In the binary tree, each node corresponds to the inclusion or the omission of a UTXO. UTXOs
@@ -210,13 +211,13 @@ static void ApproximateBestSubset(const std::vector<CInputCash>& vValue, const C
     }
 }
 
-bool KnapsackSolver(const CAmount& nTargetValue, std::vector<CInputCash>& vCash, std::set<CInputCoin>& setCashRet, CAmount& nValueRet)
+bool KnapsackSolver(const CAmount& nTargetValue, std::vector<CInputCash>& vCash, std::set<CInputCash>& setCashRet, CAmount& nValueRet)
 {
     setCashRet.clear();
     nValueRet = 0;
 
     // List of values less than target
-    boost::optional<CInputCash> coinLowestLarger;
+    boost::optional<CInputCash> cashLowestLarger;
     std::vector<CInputCash> vValue;
     CAmount nTotalLower = 0;
 
@@ -271,7 +272,7 @@ bool KnapsackSolver(const CAmount& nTargetValue, std::vector<CInputCash>& vCash,
 
     // If we have a bigger cash value and (either the stochastic approximation didn't find a good solution,
     //                                   or the next bigger cash value is closer), return the bigger cash value
-    if (coinLowestLarger &&
+    if (cashLowestLarger &&
         ((nBest != nTargetValue && nBest < nTargetValue + MIN_CHANGE) || cashLowestLarger->txout.nValue <= nBest))
     {
         setCashRet.insert(cashLowestLarger.get());

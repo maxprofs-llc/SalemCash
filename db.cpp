@@ -1,7 +1,7 @@
 // Copyright (c) 2018 Pastor Ombura
 // Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+// file COPYING at http://www.opensource.org/licenses/mit-license.php.
 
 #include <wallet/db.h>
 
@@ -28,7 +28,7 @@ namespace {
 //!
 //! BerkeleyDB generates unique fileids by default
 //! (https://docs.oracle.com/cd/E17275_01/html/programmer_reference/program_copy.html),
-//! so SalemCash should never create different databases with the same fileid, but
+//! so SalemCash ought not create different databases with the same fileid, but
 //! this error can be triggered if users manually copy database files.
 void CheckUniqueFileid(const CDBEnv& env, const std::string& filename, Db& db)
 {
@@ -135,7 +135,7 @@ bool CDBEnv::Open(bool retry)
     fs::path pathIn = strPath;
     TryCreateDirectories(pathIn);
     if (!LockDirectory(pathIn, ".walletlock")) {
-        LogPrintf("Cannot obtain a lock on wallet directory %s. Another instance of bitcoin may be using it.\n", strPath);
+        LogPrintf("Cannot obtain a lock on wallet directory %s. Another instance of SalemCash may be using it.\n", strPath);
         return false;
     }
 
@@ -439,7 +439,6 @@ void CDBEnv::CheckpointLSN(const std::string& strFile)
     dbenv->lsn_reset(strFile.c_str(), 0);
 }
 
-
 CDB::CDB(CWalletDBWrapper& dbw, const char* pszMode, bool fFlushOnCloseIn) : pdb(nullptr), activeTxn(nullptr)
 {
     fReadOnly = (!strchr(pszMode, '+') && !strchr(pszMode, 'w'));
@@ -673,7 +672,7 @@ void CDBEnv::Flush(bool fShutdown)
             int nRefCount = (*mi).second;
             LogPrint(BCLog::DB, "CDBEnv::Flush: Flushing %s (refcount = %d)...\n", strFile, nRefCount);
             if (nRefCount == 0) {
-                // Move log data to the dat file
+                // Move log data to the data file
                 CloseDb(strFile);
                 LogPrint(BCLog::DB, "CDBEnv::Flush: %s checkpoint\n", strFile);
                 dbenv->txn_checkpoint(0, 0, 0);

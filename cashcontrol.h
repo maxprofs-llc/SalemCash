@@ -12,7 +12,7 @@
 
 #include <boost/optional.hpp>
 
-/** Coin Control Features. */
+/** Cash Control Features. */
 class CCashControl
 {
 public:

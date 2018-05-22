@@ -37,7 +37,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
     CBlockIndex* const nullBlock = nullptr;
     CBlockIndex* oldTip = chainActive.Tip();
     GetBlockFileInfo(oldTip->GetBlockPos().nFile)->nSize = MAX_BLOCKFILE_SIZE;
-    CreateAndProcessBlock({}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
+    CreateAndProcessBlock({}, GetScriptForRawPubKey(cashbaseKey.GetPubKey()));
     CBlockIndex* newTip = chainActive.Tip();
 
     LOCK(cs_main);
@@ -61,7 +61,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
     // file.
     {
         CWallet wallet("dummy", CWalletDBWrapper::CreateDummy());
-        AddKey(wallet, coinbaseKey);
+        AddKey(wallet, cashbaseKey);
         WalletRescanReserver reserver(&wallet);
         reserver.reserve();
         BOOST_CHECK_EQUAL(oldTip, wallet.ScanForWalletTransactions(oldTip, nullptr, reserver));
@@ -78,7 +78,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         keys.setArray();
         UniValue key;
         key.setObject();
-        key.pushKV("scriptPubKey", HexStr(GetScriptForRawPubKey(coinbaseKey.GetPubKey())));
+        key.pushKV("scriptPubKey", HexStr(GetScriptForRawPubKey(cashbaseKey.GetPubKey())));
         key.pushKV("timestamp", 0);
         key.pushKV("internal", UniValue(true));
         keys.push_back(key);
@@ -99,7 +99,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
             strprintf("[{\"success\":false,\"error\":{\"code\":-1,\"message\":\"Rescan failed for key with creation "
                       "timestamp %d. There was an error reading a block from time %d, which is after or within %d "
                       "seconds of key creation, and could contain transactions pertaining to the key. As a result, "
-                      "transactions and coins using this key may not appear in the wallet. This error could be caused "
+                      "transactions and the cash using this key may not appear in the wallet. This error could be caused "
                       "by pruning or data corruption (see salemcashd log for details) and could be dealt with by "
                       "downloading and rescanning the relevant blocks (see -reindex and -rescan "
                       "options).\"}},{\"success\":true}]",
@@ -134,7 +134,7 @@ BOOST_FIXTURE_TEST_CASE(importwallet_rescan, TestChain100Setup)
         CWallet wallet("dummy", CWalletDBWrapper::CreateDummy());
         LOCK(wallet.cs_wallet);
         wallet.mapKeyMetadata[cashbaseKey.GetPubKey().GetID()].nCreateTime = KEY_TIME;
-        wallet.AddKeyPubKey(coinbaseKey, cashbaseKey.GetPubKey());
+        wallet.AddKeyPubKey(cashbaseKey, cashbaseKey.GetPubKey());
 
         JSONRPCRequest request;
         request.params.setArray();
@@ -213,6 +213,7 @@ static int64_t AddTx(CWallet& wallet, uint32_t lockTime, int64_t mockTime, int64
     if (block) {
         wtx.SetMerkleBranch(block, 0);
     }
+	
     {
         LOCK(cs_main);
         wallet.AddToWallet(wtx);
@@ -227,24 +228,18 @@ BOOST_AUTO_TEST_CASE(ComputeTimeSmart)
 {
     // New transaction should use clock time if lower than block time.
     BOOST_CHECK_EQUAL(AddTx(m_wallet, 1, 100, 120), 100);
-
     // Test that updating existing transaction does not change smart time.
     BOOST_CHECK_EQUAL(AddTx(m_wallet, 1, 200, 220), 100);
-
     // New transaction should use clock time if there's no block time.
     BOOST_CHECK_EQUAL(AddTx(m_wallet, 2, 300, 0), 300);
-
     // New transaction should use block time if lower than clock time.
     BOOST_CHECK_EQUAL(AddTx(m_wallet, 3, 420, 400), 400);
-
     // New transaction should use latest entry time if higher than
     // min(block time, clock time).
     BOOST_CHECK_EQUAL(AddTx(m_wallet, 4, 500, 390), 400);
-
     // If there are future entries, new transaction should use time of the
     // newest entry that is no more than 300 seconds ahead of the clock time.
     BOOST_CHECK_EQUAL(AddTx(m_wallet, 5, 50, 600), 300);
-
     // Reset mock time for other tests.
     SetMockTime(0);
 }
@@ -256,7 +251,6 @@ BOOST_AUTO_TEST_CASE(LoadReceiveRequests)
     m_wallet.AddDestData(dest, "misc", "val_misc");
     m_wallet.AddDestData(dest, "rr0", "val_rr0");
     m_wallet.AddDestData(dest, "rr1", "val_rr1");
-
     auto values = m_wallet.GetDestValues("rr");
     BOOST_CHECK_EQUAL(values.size(), 2);
     BOOST_CHECK_EQUAL(values[0], "val_rr0");
@@ -310,11 +304,11 @@ public:
     std::unique_ptr<CWallet> wallet;
 };
 
-BOOST_FIXTURE_TEST_CASE(ListCoins, ListCashTestingSetup)
+BOOST_FIXTURE_TEST_CASE(ListCash, ListCashTestingSetup)
 {
     std::string cashbaseAddress = cashbaseKey.GetPubKey().GetID().ToString();
 
-    // Confirm ListCash initially returns 1 SCS grouped under cashnbaseKey
+    // Confirm ListCash initially returns 1 SCS grouped under cashbaseKey
     // address.
     auto list = wallet->ListCash();
     BOOST_CHECK_EQUAL(list.size(), 1);
@@ -344,7 +338,7 @@ BOOST_FIXTURE_TEST_CASE(ListCoins, ListCashTestingSetup)
     for (const auto& group : list) {
         for (const auto& cash : group.second) {
             LOCK(wallet->cs_wallet);
-            wallet->LockCoin(COutPoint(cash.tx->GetHash(), cash.i));
+            wallet->LockCash(COutPoint(cash.tx->GetHash(), cash.i));
         }
     }
     {
