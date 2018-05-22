@@ -23,8 +23,6 @@
  */
 class CAddrInfo : public CAddress
 {
-
-
 public:
     //! last try whatsoever by us (memory only)
     int64_t nLastTry;
@@ -54,9 +52,7 @@ private:
     friend class CAddrMan;
 
 public:
-
     ADD_SERIALIZE_METHODS;
-
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(*static_cast<CAddress*>(this));
@@ -635,7 +631,6 @@ public:
         SetServices_(addr, nServices);
         Check();
     }
-
 };
 
 #endif // SALEMCASH_ADDRMAN_H

@@ -59,7 +59,8 @@ public:
                 indexes[j] = indexes[j] + offset;
                 offset = indexes[j] + 1;
             }
-        } else {
+        }
+		else {
             for (size_t i = 0; i < indexes.size(); i++) {
                 uint64_t index = indexes[i] - (i == 0 ? 0 : (indexes[i - 1] + 1));
                 READWRITE(COMPACTSIZE(index));

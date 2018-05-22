@@ -1,3 +1,4 @@
+// Copyright (c) 2018 Pastor Ombura
 // Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -12,13 +13,12 @@
  * for both salemcashd and salemcash-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Satoshi");
+const std::string CLIENT_NAME("Ombura");
 
 /**
  * Client version number
  */
 #define CLIENT_VERSION_SUFFIX ""
-
 
 /**
  * The following part of the code determines the CLIENT_BUILD variable.
@@ -83,7 +83,7 @@ std::string FormatFullVersion()
 }
 
 /** 
- * Format the subversion field according to BIP 14 spec (https://github.com/salemcash/bips/blob/master/bip-0014.mediawiki) 
+ * Format the subversion field according to BIP 14 spec (https://github.com/PastorOmbura/SalemCash/bips/blob/master/bip-0014.mediawiki) 
  */
 std::string FormatSubVersion(const std::string& name, int nClientVersion, const std::vector<std::string>& comments)
 {

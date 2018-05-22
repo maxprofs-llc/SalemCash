@@ -1,4 +1,3 @@
-// Copyright (c) 2018 Pastor Ombura
 // Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -155,7 +154,7 @@ public:
     explicit BlockAssembler(const CChainParams& params);
     BlockAssembler(const CChainParams& params, const Options& options);
 
-    /** Construct a new block template with coinbase to scriptPubKeyIn */
+    /** Construct a new block template with cashbase to scriptPubKeyIn */
     std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true);
 
 private:

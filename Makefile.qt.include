@@ -105,7 +105,7 @@ QT_FORMS_UI = \
   qt/forms/openuridialog.ui \
   qt/forms/optionsdialog.ui \
   qt/forms/overviewpage.ui \
-  qt/forms/receivecoinsdialog.ui \
+  qt/forms/receivecashdialog.ui \
   qt/forms/receiverequestdialog.ui \
   qt/forms/debugwindow.ui \
   qt/forms/sendcashdialog.ui \
@@ -118,10 +118,6 @@ QT_MOC_CPP = \
   qt/moc_addresstablemodel.cpp \
   qt/moc_askpassphrasedialog.cpp \
   qt/moc_bantablemodel.cpp \
-  qt/moc_salemcashaddressvalidator.cpp \
-  qt/moc_salemcashamountfield.cpp \
-  qt/moc_salemcashgui.cpp \
-  qt/moc_salemcashunits.cpp \
   qt/moc_callback.cpp \
   qt/moc_clientmodel.cpp \
   qt/moc_cashcontroldialog.cpp \
@@ -142,12 +138,16 @@ QT_MOC_CPP = \
   qt/moc_paymentserver.cpp \
   qt/moc_qvalidatedlineedit.cpp \
   qt/moc_qvaluecombobox.cpp \
-  qt/moc_receivecoinsdialog.cpp \
+  qt/moc_receivecashdialog.cpp \
   qt/moc_receiverequestdialog.cpp \
   qt/moc_recentrequeststablemodel.cpp \
   qt/moc_rpcconsole.cpp \
-  qt/moc_sendcoinsdialog.cpp \
-  qt/moc_sendcoinsentry.cpp \
+  qt/moc_salemcashaddressvalidator.cpp \
+  qt/moc_salemcashamountfield.cpp \
+  qt/moc_salemcashgui.cpp \
+  qt/moc_salemcashunits.cpp \
+  qt/moc_sendcashdialog.cpp \
+  qt/moc_sendcashentry.cpp \
   qt/moc_signverifymessagedialog.cpp \
   qt/moc_splashscreen.cpp \
   qt/moc_trafficgraphwidget.cpp \
@@ -187,10 +187,6 @@ SALEMCASH_QT_H = \
   qt/addresstablemodel.h \
   qt/askpassphrasedialog.h \
   qt/bantablemodel.h \
-  qt/salemcashaddressvalidator.h \
-  qt/salemcashamountfield.h \
-  qt/salemcashgui.h \
-  qt/salemcashunits.h \
   qt/callback.h \
   qt/clientmodel.h \
   qt/cashcontroldialog.h \
@@ -219,6 +215,10 @@ SALEMCASH_QT_H = \
   qt/receiverequestdialog.h \
   qt/recentrequeststablemodel.h \
   qt/rpcconsole.h \
+  qt/salemcashaddressvalidator.h \
+  qt/salemcashamountfield.h \
+  qt/salemcashgui.h \
+  qt/salemcashunits.h \
   qt/sendcashdialog.h \
   qt/sendcashentry.h \
   qt/signverifymessagedialog.h \
@@ -242,9 +242,6 @@ RES_ICONS = \
   qt/res/icons/address-book.png \
   qt/res/icons/about.png \
   qt/res/icons/about_qt.png \
-  qt/res/icons/salemcash.ico \
-  qt/res/icons/salemcash_testnet.ico \
-  qt/res/icons/salemcash.png \
   qt/res/icons/chevron.png \
   qt/res/icons/clock1.png \
   qt/res/icons/clock2.png \
@@ -281,6 +278,9 @@ RES_ICONS = \
   qt/res/icons/quit.png \
   qt/res/icons/receive.png \
   qt/res/icons/remove.png \
+  qt/res/icons/salemcash.ico \
+  qt/res/icons/salemcash_testnet.ico \
+  qt/res/icons/salemcash.png \
   qt/res/icons/send.png \
   qt/res/icons/synced.png \
   qt/res/icons/transaction0.png \
@@ -296,10 +296,6 @@ RES_ICONS = \
 
 SALEMCASH_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
-  qt/salemcashaddressvalidator.cpp \
-  qt/salemcashamountfield.cpp \
-  qt/salemcashgui.cpp \
-  qt/salemcashunits.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
   qt/guiutil.cpp \
@@ -314,6 +310,10 @@ SALEMCASH_QT_BASE_CPP = \
   qt/qvalidatedlineedit.cpp \
   qt/qvaluecombobox.cpp \
   qt/rpcconsole.cpp \
+  qt/salemcashaddressvalidator.cpp \
+  qt/salemcashamountfield.cpp \
+  qt/salemcashgui.cpp \
+  qt/salemcashunits.cpp \
   qt/splashscreen.cpp \
   qt/trafficgraphwidget.cpp \
   qt/utilitydialog.cpp
@@ -438,7 +438,7 @@ $(QT_QRC_CPP): $(QT_QRC) $(QT_FORMS_H) $(RES_ICONS) $(RES_IMAGES) $(RES_MOVIES) 
 	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name salemcash $< | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 
-CLEAN_QT = $(nodist_qt_libsalemcashqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno qt/temp_bitcoin_locale.qrc
+CLEAN_QT = $(nodist_qt_libsalemcashqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno qt/temp_salemcash_locale.qrc
 
 CLEANFILES += $(CLEAN_QT)
 

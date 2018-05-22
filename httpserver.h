@@ -22,11 +22,13 @@ class HTTPRequest;
  * Call this before RegisterHTTPHandler or EventBase().
  */
 bool InitHTTPServer();
+
 /** Start HTTP server.
  * This is separate from InitHTTPServer to give users race-condition-free time
  * to register their handlers between InitHTTPServer and StartHTTPServer.
  */
 bool StartHTTPServer();
+
 /** Interrupt HTTP server threads */
 void InterruptHTTPServer();
 /** Stop HTTP server */

@@ -72,7 +72,6 @@ void AES256Decrypt::Decrypt(unsigned char plaintext[16], const unsigned char cip
     AES256_decrypt(&ctx, 1, plaintext, ciphertext);
 }
 
-
 template <typename T>
 static int CBCEncrypt(const T& enc, const unsigned char iv[AES_BLOCKSIZE], const unsigned char* data, int size, bool pad, unsigned char* out)
 {
@@ -171,7 +170,6 @@ AES256CBCDecrypt::AES256CBCDecrypt(const unsigned char key[AES256_KEYSIZE], cons
 {
     memcpy(iv, ivIn, AES_BLOCKSIZE);
 }
-
 
 int AES256CBCDecrypt::Decrypt(const unsigned char* data, int size, unsigned char* out) const
 {

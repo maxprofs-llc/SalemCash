@@ -1,4 +1,3 @@
-// Copyright (c) 2018 Pastor Ombura
 // Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -33,7 +32,7 @@ public:
     virtual std::set<CKeyID> GetKeys() const =0;
     virtual bool GetPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) const =0;
 
-    //! Support for BIP 0013 : see https://github.com/SalemCash/bips/blob/master/bip-0013.mediawiki
+    //! Support for BIP 0013 : see https://github.com/PastorOmbura/SalemCash/bips/blob/master/bip-0013.mediawiki
     virtual bool AddCScript(const CScript& redeemScript) =0;
     virtual bool HaveCScript(const CScriptID &hash) const =0;
     virtual std::set<CScriptID> GetCScripts() const =0;

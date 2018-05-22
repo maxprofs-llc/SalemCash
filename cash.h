@@ -1,4 +1,3 @@
-// Copyright (c) 2018 Pastor Ombura
 // Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -32,13 +31,13 @@ public:
     //! unspent transaction output
     CTxOut out;
 
-    //! whether containing transaction was a cashbase
+    //! whether containing transaction of a cashbase
     unsigned int fCashBase : 1;
 
     //! at which height this containing transaction was included in the active block chain
     uint32_t nHeight : 31;
 
-    //! construct Cash from a CTxOut and height/coinbase information.
+    //! construct Cash from a CTxOut and height/cashbase information.
     Cash(CTxOut&& outIn, int nHeightIn, bool fCashBaseIn) : out(std::move(outIn)), fCashBase(fCashBaseIn), nHeight(nHeightIn) {}
     Cash(const CTxOut& outIn, int nHeightIn, bool fCashBaseIn) : out(outIn), fCashBase(fCashBaseIn),nHeight(nHeightIn) {}
 
@@ -49,7 +48,7 @@ public:
     }
 
     //! empty constructor
-    Coin() : fCashBase(false), nHeight(0) { }
+    Cash() : fCashBase(false), nHeight(0) { }
 
     bool IsCashBase() const {
         return fCashBase;
@@ -177,7 +176,6 @@ public:
     virtual size_t EstimateSize() const { return 0; }
 };
 
-
 /** CCashView backed by another CCashView */
 class CCashViewBacked : public CCashView
 {
@@ -195,7 +193,6 @@ public:
     CCashViewCursor *Cursor() const override;
     size_t EstimateSize() const override;
 };
-
 
 /** CCashView that adds a memory cache for transactions to another CCashView */
 class CCashViewCache : public CCashViewBacked

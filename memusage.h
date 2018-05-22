@@ -117,7 +117,6 @@ static inline size_t IncrementalDynamicUsage(const std::map<X, Y, Z>& m)
 }
 
 // indirectmap has underlying map with pointer as key
-
 template<typename X, typename Y>
 static inline size_t DynamicUsage(const indirectmap<X, Y>& m)
 {

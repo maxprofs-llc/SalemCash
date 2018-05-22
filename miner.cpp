@@ -1,4 +1,3 @@
-// Copyright (c) 2018 Pastor Ombura
 // Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -8,7 +7,7 @@
 #include <amount.h>
 #include <chain.h>
 #include <chainparams.h>
-#include <coins.h>
+#include <cash.h>
 #include <consensus/consensus.h>
 #include <consensus/tx_verify.h>
 #include <consensus/merkle.h>
@@ -89,12 +88,12 @@ void BlockAssembler::resetBlock()
 {
     inBlock.clear();
 
-    // Reserve space for coinbase tx
+    // Reserve space for cashbase tx
     nBlockWeight = 4000;
     nBlockSigOpsCost = 400;
     fIncludeWitness = false;
 
-    // These counters do not include coinbase tx
+    // These counters do not include cashbase tx
     nBlockTx = 0;
     nFees = 0;
 }
@@ -111,7 +110,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         return nullptr;
     pblock = &pblocktemplate->block; // pointer for convenience
 
-    // Add dummy coinbase tx as first transaction
+    // Add dummy cashbase tx as first transaction
     pblock->vtx.emplace_back();
     pblocktemplate->vTxFees.push_back(-1); // updated at end
     pblocktemplate->vTxSigOpsCost.push_back(-1); // updated at end
@@ -160,7 +159,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     cashbaseTx.vout[0].nValue = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus());
     cashbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
     pblock->vtx[0] = MakeTransactionRef(std::move(cashbaseTx));
-    pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus());
+    pblocktemplate->vchCashbaseCommitment = GenerateCashbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus());
     pblocktemplate->vTxFees[0] = -nFees;
 
     LogPrintf("CreateNewBlock(): block weight: %u txs: %u fees: %ld sigops %d\n", GetBlockWeight(*pblock), nBlockTx, nFees, nBlockSigOpsCost);
@@ -443,11 +442,11 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
         hashPrevBlock = pblock->hashPrevBlock;
     }
     ++nExtraNonce;
-    unsigned int nHeight = pindexPrev->nHeight+1; // Height first in coinbase required for block.version=2
-    CMutableTransaction txCoinbase(*pblock->vtx[0]);
-    txCoinbase.vin[0].scriptSig = (CScript() << nHeight << CScriptNum(nExtraNonce)) + COINBASE_FLAGS;
-    assert(txCoinbase.vin[0].scriptSig.size() <= 100);
+    unsigned int nHeight = pindexPrev->nHeight+1; // Height first in cashbase required for block.version=2
+    CMutableTransaction txCashbase(*pblock->vtx[0]);
+    txCashbase.vin[0].scriptSig = (CScript() << nHeight << CScriptNum(nExtraNonce)) + CASHBASE_FLAGS;
+    assert(txCashbase.vin[0].scriptSig.size() <= 100);
 
-    pblock->vtx[0] = MakeTransactionRef(std::move(txCoinbase));
+    pblock->vtx[0] = MakeTransactionRef(std::move(txCashbase));
     pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
 }

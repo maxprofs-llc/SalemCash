@@ -1,4 +1,3 @@
-// Copyright (c) 2018 Pastor Ombura
 // Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -253,6 +252,7 @@ uint256 ArithToUint256(const arith_uint256 &a)
         WriteLE32(b.begin() + x*4, a.pn[x]);
     return b;
 }
+
 arith_uint256 UintToArith256(const uint256 &a)
 {
     arith_uint256 b;

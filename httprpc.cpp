@@ -58,7 +58,6 @@ private:
     struct event_base* base;
 };
 
-
 /* Pre-base64-encoded authentication token */
 static std::string strRPCUserColonPass;
 /* Stored RPC timer interface (for unregistration) */

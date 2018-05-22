@@ -1,4 +1,3 @@
-// Copyright (c) 2018 Pastor Ombura
 // Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -555,9 +554,6 @@ public:
     CAddress addrBind;
 };
 
-
-
-
 class CNetMessage {
 private:
     mutable CHash256 hasher;
@@ -600,7 +596,6 @@ public:
     int readHeader(const char *pch, unsigned int nBytes);
     int readData(const char *pch, unsigned int nBytes);
 };
-
 
 /** Information about a peer */
 class CNode
@@ -794,7 +789,6 @@ public:
         nRefCount--;
     }
 
-
     void AddAddressKnown(const CAddress& _addr)
     {
         addrKnown.insert(_addr.GetKey());
@@ -813,7 +807,6 @@ public:
             }
         }
     }
-
 
     void AddInventoryKnown(const CInv& inv)
     {
@@ -856,7 +849,6 @@ public:
     //! Sets the addrName only if it was not previously set
     void MaybeSetAddrName(const std::string& addrNameIn);
 };
-
 
 /** Return a timestamp in the future (in microseconds) for exponentially distributed events. */
 int64_t PoissonNextSend(int64_t nNow, int average_interval_seconds);

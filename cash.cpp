@@ -1,4 +1,4 @@
-// Copyright (c) // Copyright (c) 2018 The SalemCash developers
+// Copyright (c) 2018 The SalemCash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,7 +7,7 @@
 #include <consensus/consensus.h>
 #include <random.h>
 
-bool CCoinsView::GetCash(const COutPoint &outpoint, Cash &cash) const { return false; }
+bool CCashView::GetCash(const COutPoint &outpoint, Cash &cash) const { return false; }
 uint256 CCashView::GetBestBlock() const { return uint256(); }
 std::vector<uint256> CCashView::GetHeadBlocks() const { return std::vector<uint256>(); }
 bool CCashView::BatchWrite(CCashMap &mapCash, const uint256 &hashBlock) { return false; }
@@ -85,13 +85,13 @@ void CCashViewCache::AddCash(const COutPoint &outpoint, Cash&& cash, bool possib
 }
 
 void AddCash(CCashViewCache& cache, const CTransaction &tx, int nHeight, bool check) {
-    bool fCashbase = tx.IsCashBase();
+    bool fCashBase = tx.IsCashBase();
     const uint256& txid = tx.GetHash();
     for (size_t i = 0; i < tx.vout.size(); ++i) {
-        bool overwrite = check ? cache.HaveCash(COutPoint(txid, i)) : fCashbase;
+        bool overwrite = check ? cache.HaveCash(COutPoint(txid, i)) : fCashBase;
         // Always set the possible_overwrite flag to AddCash for cashbase txn, in order to correctly
-        // deal with the pre-BIP30 occurrences of duplicate coinbase transactions.
-        cache.AddCash(COutPoint(txid, i), Cash(tx.vout[i], nHeight, fCashbase), overwrite);
+        // deal with the pre-BIP30 occurrences of duplicate cashbase transactions.
+        cache.AddCash(COutPoint(txid, i), Cash(tx.vout[i], nHeight, fCashBase), overwrite);
     }
 }
 
