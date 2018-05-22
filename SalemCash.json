@@ -1,528 +1,520 @@
-/* Awaken your investment acumen with cryptocurrency! */
-// PastorOmbura
-
-#include <iostream>
-using namespace std;
-
-//Prototype
-
-int main () { 
-  cout << "Hello World! Welcome." << endl;
-  cout << "name": "salemcash" << endl;
-  cout << "version": "0.0.1" << endl;
-  cout << "description": "Salemcash, a cryptocurrency coin" << endl;
-  cout << "homepage": "https://github.com/PastorOmbura/SalemCash" << endl;
-  cout << "license": "MIT License"; << endl;
-  cin.get ();
-  return 0
- }
-  
-  "repository": { 
-    cout << "type": "git" << endl;
-    cout << "url": "https://github.com/PastorOmbura/SalemCash"; << endl;
- }
-  
-  "bin": { 
-    cout << "salemcash": "bin/salemcash.js" << endl;
- }
-  
-  "scripts": { 
-    cout << "start": "node bin/salemcash.js" << endl;
-    cout << "compose:up": "docker-compose up" << endl;
-    cout << "test": "_mocha -u bdd --colors test/" << endl;
-    cout << "diagrams": "mmdc -i doc/blockchain.mmd -o doc/blockchain.png -b transparent && mmdc -i doc/components.mmd -o doc/components.png -b transparent" << endl;
- }
-  
-  "dependencies": { 
-    cout << "body-parser": "^1.17.1" << endl;
-    cout << "cli-color": "^1.2.0" << endl;
-    cout << "elliptic": "^6.4.0" << endl;
-    cout << "es6-error": "^4.0.2" << endl;
-    cout << "express": "^4.16.2" << endl;
-    cout << "fs-extra": "^5.0.0" << endl;
-    cout << "pug": "^2.0.0-rc.4" << endl;
-    cout << "ramda": "^0.25.0" << endl;
-    cout << "statuses": "^1.3.1" << endl;
-    cout << "superagent": "^3.5.2" << endl;
-    cout << "swagger-ui-express": "^1.0.8" << endl;
-    cout << "threads": "^0.10.0" << endl;
-    cout << "timeago.js": "^3.0.2" << endl;
-    cout << "yargs": "^10.1.1" << endl;
- }
-  
-  "engines": { 
-    cout << "node": ">=6" << endl;
- }
-  
-  "devDependencies": { 
-    cout << "coveralls": "^3.0.0" << endl;
-    cout << "mermaid.cli": "^0.3.1" << endl;
-    cout << "mocha": "^3.3.0" << endl;
-    cout << "mocha-steps": "^1.0.2" << endl;
-    cout << "supertest": "^1.0.0" << endl;
- }
-  
-  "CONTRIBUTING.md": {
-   cout << "Contributing to SalemCash Core" << endl;
-   line ();
-   message ();
-	
-   void line ()                      // To draw a line.
-   cout << "==============================" << endl;
-   
-                       {
-   void message ()                   // To display a message.
-   cout << "\nThe SalemCash Core project operates an open contributor model where anyone is \n"
-           " welcome to contribute towards development in the form of peer review, testing \n"
-           " and patches. This document explains the practical process and guidelines for \n"
-           " contributing. \n";
-
-   cout << "\nFirstly in terms of structure, there is no particular concept of \"Core \n"
-           " developers\" in the sense of privileged people. Open source often naturally \n"
-           " revolves around meritocracy where longer term contributors gain more trust from \n"
-           " the developer community. However, some hierarchy is necessary for practical \n"
-           " purposes. As such there are repository \"maintainers\" who are responsible for \n"
-           " merging pull requests as well as a \"lead maintainer\" who is responsible for the \n"
-           " release cycle, overall merging, moderation and appointment of maintainers. \n";
-    }
- 
-                       {
-   cout << "Contributor Workflow" << endl;
-   cout << "--------------------" << endl;
-
-   cout << "\nThe codebase is maintained using the \"contributor workflow\" where everyone \n"
-           " without exception contributes patch proposals using \"pull requests\". This \n"
-           " facilitates social contribution, easy testing and peer review. \n";
-
-   cout << "To contribute a patch, the workflow is as follows:" << endl;
-
-   cout << "\t 1. Fork repository\t";
-   cout << "\t 1. Create topic branch\t";
-   cout << "\t 1. Commit patches";
-
-   cout << "\nThe project coding conventions in the [developer notes](doc/developer-notes.md) \n"
-           " must be adhered to. \n";
-
-   cout << "\nIn general [commits should be atomic](https://en.wikipedia.org/wiki/Atomic_commit#Atomic_commit_convention) \"
-           " and diffs should be easy to read. For this reason do not mix any formatting \n"
-           " fixes or code moves with actual code changes. \n";
-
-   cout << "\nCommit messages should be verbose by default consisting of a short subject line \n"
-           "(50 chars max), a blank line and detailed explanatory text as separate \n"
-           " paragraph(s), unless the title alone is self-explanatory (like "Corrected typo \n"
-           " in init.cpp") in which case a single title line is sufficient. Commit messages should be \n"
-           " helpful to people reading your code in the future, so explain the reasoning for \n"
-           " your decisions. Further explanation [here](http://chris.beams.io/posts/git-commit/). \n";
-
-   cout << "If a particular commit references another issue, please add the reference. For \n"
-           "example: `refs #1234` or `fixes #4321`. Using the `fixes` or `closes` keywords \n"
-           "will cause the corresponding issue to be closed when the pull request is merged. \n";
-
-   cout << "Please refer to the [Git manual](https://git-scm.com/doc) for more information \n"
-           " about Git. \n";
-
-   cout << "\t - Push changes to your fork \t";
-   cout << "\t - Create pull request";
-
-   cout << "\nThe title of the pull request should be prefixed by the component or area that \n"
-           " the pull request affects. Valid areas as: \n\t"
-
-           "\t - *Consensus* for changes to consensus critical code \n\t"
-           " - *Docs* for changes to the documentation \n\t"
-           " - *Qt* for changes to salemcash-qt \n\t"
-           " - *Mining* for changes to the mining code \n\t"
-           " - *Net* or *P2P* for changes to the peer-to-peer network code \t"
-           " - *RPC/REST/ZMQ* for changes to the RPC, REST or ZMQ APIs \t"
-           " - *Scripts and tools* for changes to the scripts and tools \t"
-           " - *Tests* for changes to the bitcoin unit tests or QA tests \t"
-          "\n- *Trivial* should **only** be used for PRs that do not change generated \n\t"
-           " executable code. Notably, refactors (change of function arguments and code \n\t"
-           " reorganization) and changes in behavior should **not** be marked as trivial. \n";
-		   
-   cout << "\n\t Examples of trivial PRs are changes to: \n\t\t"
-           " - comments \n\t\t"
-           " - whitespace \n\t\t"
-           " - variable names \n\t\t"
-           " - logging and messages \n\t\t"
-           " - *Utils and libraries* for changes to the utils and libraries \n\t\t"
-           " - *Wallet* for changes to the wallet code \n";
-
-   cout << "\n\tExamples: \n\t"
-
-           " Consensus: Add new opcode for BIP-XXXX OP_CHECKAWESOMESIG \n\t"
-           " Net: Automatically create hidden service, listen on Tor \n\t"
-           " Qt: Add feed bump button \n\t"
-           " Trivial: Fix typo in init.cpp \n";
-
-   cout << "\nNote that translations should not be submitted as pull requests, please see \n"
-           " [Translation Process](https://github.com/pastombura/salemcash/blob/master/doc/translation_process.md) \n"
-           " for more information on helping with translations. \n";
-
-   cout << "\nIf a pull request is not to be considered for merging (yet), please \n"
-           " prefix the title with [WIP] or use [Tasks Lists](https://help.github.com/articles/basic-writing-and-formatting-syntax/#task-lists) \n"
-           " in the body of the pull request to indicate tasks are pending. \n";
-
-   cout << "\nThe body of the pull request should contain enough description about what the \n"
-           " patch does together with any justification/reasoning. You should include \n"
-           " references to any discussions (for example other tickets or mailing list \n"
-           " discussions). \n";
-
-   cout << "\nAt this stage one should expect comments and review from other contributors. You \n"
-           " can add more commits to your pull request by committing them locally and pushing \n"
-           " to your fork until you have satisfied all feedback. \n";
-    }
- 
-                       {
-   cout << "Squashing Commits" << endl;
-   cout << "-----------------" << endl;
-   
-   cout << "\nIf your pull request is accepted for merging, you may be asked by a maintainer \n"
-           " to squash and or [rebase](https://git-scm.com/docs/git-rebase) your commits \n"
-           " before it will be merged. The basic squashing workflow is shown below. \";
-
-   cout << "\t git checkout your_branch_name \t";
-   cout << "\t git rebase -i HEAD~n \t";
-   cout << "\t # n is normally the number of commits in the pull \t";
-   cout << "\t # set commits from 'pick' to 'squash', save and quit \t";
-   cout << "\t # on the next screen, edit/refine commit messages \t";
-   cout << "\t # save and quit \t";
-   cout << "\t git push -f # (force push to GitHub)\t";
-
-   cout << "\nIf you have problems with squashing (or other workflows with `git`), you can \n"
-           " alternatively enable "Allow edits from maintainers" in the right GitHub \n"
-           " sidebar and ask for help in the pull request. \n";
-
-   cout << "\nPlease refrain from creating several pull requests for the same change. Use \n"
-           " the pull request that is already open (or was created earlier) to amend \n"
-           " changes. This preserves the discussion and review that happened earlier for \n"
-           " the respective change set. \n";
-
-   cout << "\nThe length of time required for peer review is unpredictable and will vary from \n"
-           " pull request to pull request. \n";
-    }
- 
-                       {
-   cout << "Pull Request Philosophy" << endl;
-   cout << "-----------------------" << endl;
-
-   cout << "\nPatchsets should always be focused. For example, a pull request could add a \n"
-           " feature, fix a bug, or refactor code; but not a mixture. Please also avoid super \n"
-           " pull requests which attempt to do too much, are overly large, or overly complex \n"
-           " as this makes review difficult. \n";
- 
-   cout << "### Features" << endl;
-
-   cout << "\nWhen adding a new feature, thought must be given to the long term technical debt \n"
-           " and maintenance that feature may require after inclusion. Before proposing a new \n"
-           " feature that will require maintenance, please consider if you are willing to \n"
-           " maintain it (including bug fixing). If features get orphaned with no maintainer \n"
-           " in the future, they may be removed by the Repository Maintainer. \n";
-    }
- 
-                       {
-   cout << "### Refactoring" << endl;
-
-   cout << "\nRefactoring is a necessary part of any software project's evolution. The \n"
-           " following guidelines cover refactoring pull requests for the project. \n";
-
-   cout << "\nThere are three categories of refactoring, code only moves, code style fixes, \n"
-           " code refactoring. In general refactoring pull requests should not mix these \n"
-           " three kinds of activity in order to make refactoring pull requests easy to \n"
-           " review and uncontroversial. In all cases, refactoring PRs must not change the \"
-           " behaviour of code within the pull request (bugs must be preserved as is). \n";
-
-  cout << "\nProject maintainers aim for a quick turnaround on refactoring pull requests, so \n"
-          " where possible keep them short, uncomplex and easy to verify. \n";
-
-  cout << "\nPull requests that refactor the code should not be made by new contributors. It \n"
-          " requires a certain level of experience to know where the code belongs to and to \n"
-          " understand the full ramification (including rebase effort of open pull requests). \n";
-
-  cout << "\nTrivial pull requests or pull requests that refactor the code with no clear \n"
-          " benefits may be immediately closed by the maintainers to reduce unnecessary \n"
-          " workload on reviewing. \";
-    }
-
-                       {
-  cout << "\"Decision Making\" Process" << endl;
-  cout << "-------------------------" << endl;
-
-  cout << "\nThe following applies to code changes to the Bitcoin Core project (and related \n"
-          " projects such as libsecp256k1), and is not to be confused with overall SalemCash \n"
-          " Network Protocol consensus changes. \n";
-
-  cout << "\nWhether a pull request is merged into Bitcoin Core rests with the project merge \n"
-          " maintainers and ultimately the project lead. \n";
-
-  cout << "\nMaintainers will take into consideration if a patch is in line with the general \n"
-          " principles of the project; meets the minimum standards for inclusion; and will \n"
-          " judge the general consensus of contributors. \n";
-
-  cout << "\nIn general, all pull requests must: \n\t"
-          " - Have a clear use case, fix a demonstrable bug or serve the greater good of \n"
-          " the project (for example refactoring for modularisation) \n";
-  cout << "\t - Be well peer reviewed \t";
-  cout << "\t - Have unit tests and functional tests where appropriate \t";
-  cout << "\t - Follow code style guidelines ([C++](doc/developer-notes.md), [functional tests](test/functional/README.md)) \t";
-  cout << "\t - Not break the existing test suite \t";
-  cout << "\n\t - Where bugs are fixed, where possible, there should be unit tests \n\t"
-          " demonstrating the bug and also proving the fix. This helps prevent regression. \n";
-
-  cout << "\nPatches that change Bitcoin consensus rules are considerably more involved than \n"
-          " normal because they affect the entire ecosystem and so must be preceded by \n"     
-          " extensive mailing list discussions and have a numbered BIP. While each case will \n"
-          " be different, one should be prepared to expend more time and effort than for \n"
-          " other kinds of patches because of increased peer review and consensus building \n"
-          " requirements. \n";
-    }
- 
-                       {
-  cout << "### Peer Review" >> endl;
-
-  cout << "\nAnyone may participate in peer review which is expressed by comments in the pull \n"                        
-          " request. Typically reviewers will review the code for obvious errors, as well as \n"
-          " test out the patch set and opine on the technical merits of the patch. Project \n"
-          " maintainers take into account the peer review when determining if there is \n"
-          " consensus to merge a pull request (remember that discussions may have been \n"
-          " spread out over GitHub, mailing list and IRC discussions). The following \n"
-          " language is used within pull-request comments: \n";
-		  
-  cout << "\t - ACK means "I have tested the code and I agree it should be merged \t";
-  cout << "\n\t - NACK means \"I disagree this should be merged\", and must be accompanied by \n\t"
-          " sound technical justification (or in certain cases of copyright/patent/licensing \n\t"
-          " issues, legal justification). NACKs without accompanying reasoning may be \n\t"
-          " disregarded \n";
-  cout << "\n\t - utACK means "I have not tested the code, but I have reviewed it and it looks \n\t"
-          " OK, I agree it can be merged \n";
-  cout << "\t - Concept ACK means "I agree in the general principle of this pull request \t";
-  cout << "\t - Nit refers to trivial, often non-blocking issues."; 
-
-  cout << "Reviewers should include the commit hash which they reviewed in their comments." << endl;
-
-  cout << "\nProject maintainers reserve the right to weigh the opinions of peer reviewers \n"
-          " using common sense judgement and also may weight based on meritocracy: Those \n"
-          " that have demonstrated a deeper commitment and understanding towards the project \n"
-          " (over time) or have clear domain expertise may naturally have more weight, as \n"
-          " one would expect in all walks of life. \n";
-
-  cout << "\nWhere a patch set affects consensus critical code, the bar will be set much \n"
-          " higher in terms of discussion and peer review requirements, keeping in mind that \n"
-          " mistakes could be very costly to the wider community. This includes refactoring \n"
-          " of consensus critical code. \n";
-
-  cout << "\nWhere a patch set proposes to change the Bitcoin consensus, it must have been \n"
-          " discussed extensively on the mailing list and IRC, be accompanied by a widely \n"
-          " discussed BIP and have a generally widely perceived technical consensus of being \n"
-          " a worthwhile change based on the judgement of the maintainers. \n";
-    }
-  
-                       {
-
-  cout << "### Finding Reviewers" << endl;
-
-  cout << "\nAs most reviewers are themselves developers with their own projects, the review \n"
-          " process can be quite lengthy, and some amount of patience is required. If you find \n"
-          " that you've been waiting for a pull request to be given attention for several \n"
-          " months, there may be a number of reasons for this, some of which you can do something \n"
-          " about: \n";
-
-  cout << "\n\t - It may be because of a feature freeze due to an upcoming release. During this time, \n\t"
-          " only bug fixes are taken into consideration. If your pull request is a new feature, \n\t"
-          " it will not be prioritized until the release is over. Wait for release. \n";
-  cout << "\n\t - It may be because the changes you are suggesting do not appeal to people. Rather than \n\t"
-          " nits and critique, which require effort and means they care enough to spend time on your \n\t"
-          " contribution, thundering silence is a good sign of widespread (mild) dislike of a given change \n\t"
-          " (because people don't assume *others* won't actually like the proposal). Don't take \n\t"
-          " that personally, though! Instead, take another critical look at what you are suggesting \n\t"
-          " and see if it: changes too much, is too broad, doesn't adhere to the \n\t"
-          " [developer notes](doc/developer-notes.md), is dangerous or insecure, is messily written, etc. \n\t"
-          " Identify and address any of the issues you find. Then ask e.g. on IRC if someone could give \n\t"
-          " their opinion on the concept itself. \n\t";
-  cout << "\n\t - It may be because your code is too complex for all but a few people. And those people \n\t"
-          " may not have realized your pull request even exists. A great way to find people who \n\t"
-          " are qualified and care about the code you are touching is the \n\t"
-          " [Git Blame feature](https://help.github.com/articles/tracing-changes-in-a-file/). Simply \n\t"
-          " find the person touching the code you are touching before you and see if you can find \n\t"
-          " them and give them a nudge. Don't be incessant about the nudging though. \n\t";
-  cout << "\n\t - Finally, if all else fails, ask on IRC or elsewhere for someone to give your pull request \n\t"
-          " a look. If you think you've been waiting an unreasonably long amount of time (month+) for \n\t"
-          " no particular reason (few lines changed, etc), this is totally fine. Try to return the favor \n\t"
-          " when someone else is asking for feedback on their code, and universe balances out. \n\t";
-    }
- 
-                       {
-  cout << "Release Policy" << endl;
-  cout << "--------------" << endl;
-
-  cout << "The project leader is the release manager for each SalemCash Core release." << endl;
-    }
-
-                       {
-  cout << "Copyright" << endl;
-  cout << "---------" << endl;
-
-  cout << "\nBy contributing to this repository, you agree to license your work under the \n"
-          " MIT license unless specified otherwise in `contrib/debian/copyright` or at \n"
-          " the top of the file itself. Any work contributed where you are not the original \n" 
-          " author must contain its license header with the original author(s) and source. \n";
-    }
-  
- }
-     
-  "COPYING": { 
-    cout << "The MIT License (MIT)" << endl;
-
-    cout << "Copyright (c) 2018 The Salemcash Core developers" << endl;
-    cout << "Copyright (c) 2018 Salemcash Developers" << endl;
-	
-                 {
-    cout << "\nPermission is hereby granted, free of charge, to any person obtaining a copy \n"
-            " of this software and associated documentation files (the "Software"), to deal \n"
-            " in the Software without restriction, including without limitation the rights \n"
-            " to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \n"
-            " copies of the Software, and to permit persons to whom the Software is \n"
-            " furnished to do so, subject to the following conditions:";
-
-    cout << "\nThe above copyright notice and this permission notice shall be included in \n"
-            " all copies or sub stantial portions of the Software. \n"; 
-    }
-  
-                 {
-    cout << "\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \n"
-            " IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n"
-            " FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \n"
-            " AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
-            " LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, \n"
-            " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN \n"
-            "T HE SOFTWARE. \n";
-    }
- 
- }
-  
-  "INSTALL.md": { 
-   cout << "Building SalemCash" << endl;
+// Copyright (c) 2018 Pastor Ombura
+// Copyright (c) 2018 The SalemCash developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+              
+    #include <iostream>                    //Prototype      
+    using namespace std;
     
-                   {
-    cout << "-----------------" << endl;
-    }
- 
-                   {
-    cout << "\nSee doc/build-*.md for instructions on building the various \n
-	        " elements of the SalemCash Core reference implementation of SalemCash.\n";
-    }
-	
- }
+ { /** Awaken your investment acumen with a cryptocurrency! 
+        *
+    * Think investment, think SalemCash!
+    */
+    
+    int main () { 
+        cout << "name": "salemcash" << endl;
+        cout << "version": "0.0.1" << endl;
+        cout << "description": "Salemcash, a cryptocurrency" << endl;
+        cout << "homepage": "http://salemcash.org or https://github.com/PastorOmbura/SalemCash" << endl;
+        cout << "license": "MIT License"; << endl;
+        cin.get ();
+        return 0
+        }
   
-  "libsalemcashconsensus.pc.in": { 
-    cout << "prefix=@prefix@" << endl;
-    cout << "exec_prefix=@exec_prefix@" << endl;
-    cout << "libdir=@libdir@" << endl;
-    cout << "includedir=@includedir@" << endl;
-	
-                                     {
-    cout << "-----------------------------------------------" << endl;
-    }
- 
-                                     {
-    cout << "Name: @PACKAGE_NAME@ consensus library" << endl;
-    cout << "Description: Library for the SalemCash consensus protocol." << endl;
-    cout << "Version: @PACKAGE_VERSION@" << endl;
-    cout << "Libs: -L${libdir} -lsalemcashconsensus" << endl;
-    cout << "Cflags: -I${includedir}" << endl;
-    cout << "Requires.private: libcrypto" << endl;
-    }
-	
- }
+    repository () { 
+        cout << "type": "git" << endl;
+        cout << "url": "https://github.com/PastorOmbura/SalemCash"; << endl;
+        }
   
- "README.md": { 
-   cout << "SalemCash Core integration/staging tree" << endl;
-   cout << "=======================================" << endl;
-
-                   {
-  cout << "What is SalemCash?" << endl;
-  cout << "------------------" << endl;
-
-  cout << "\nSalemCash is an experimental digital currency that enables instant payments to anyone, anywhere in the world. \n"
-          " The value is pegged on the proposed assets of the $500 million \"Jerusalem Paradise\" 50-storeys twin tower \n"
-          " but with the option of growth to increase its capitalization. Consequently, SalemCash uses peer-to-peer technology \n"
-		  " to operate with no central authority since managing transactions and issuing money are carried out collectively by the network. \n"
-		  " SalemCash Core is the name of open source software which enables the use of this cryptocurrency. \n";
-
-  cout << "\nFor more information, as well as an immediately useable, binary version of the SalemCash Core software, \n"
-          " see https://www.salemcash.org/en/download. \n";
-    }
- 
-                   {
-  cout << "License" << endl;
-  cout << "-------" << endl;
-
-  cout << "\nSalemCash Core is released under the terms of the MIT license. See [COPYING](COPYING) for more \n"
-          " information or see https://opensource.org/licenses/MIT. \n";
-    }
- 
-                   {
-  cout << "Development Process" << endl;
-  cout << "-------------------" << endl;
-
-  cout << "\nThe `master` branch is regularly built and tested, but is not guaranteed to be \n"
-          " completely stable. [Tags](https://github.com/pastorombura/salemcash/tags) are created \n"
-          " regularly to indicate new official, stable release versions of SalemCash Core. \n";
-
-  cout << "The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md)." << endl;
-
-  cout << "\nThe developer [mailing list](https://lists.linuxfoundation.org/mailman/listinfo/salemcash-dev) \n"
-          " should be used to discuss complicated or controversial changes before working on a patch set. \n";
-
-  cout << "Developer IRC can be found on Freenode at #salemcash-core-dev." << endl;
-    }
+    bin () { 
+        cout << "salemcash": "bin/salemcash.js" << endl;
+        }
   
-                   {
-   cout << "Testing" << endl;
-   cout << "-------" << endl;
+    scripts () { 
+        cout << "start": "node bin/salemcash.js" << endl;
+        cout << "compose:up": "docker-compose up" << endl;
+        cout << "test": "_mocha -u bdd --colors test/" << endl;
+        cout << "diagrams": "mmdc -i doc/blockchain.mmd -o doc/blockchain.png -b transparent && mmdc -i doc/components.mmd -o doc/components.png -b transparent" << endl;
+        }
+  
+     dependencies () { 
+        cout << "body-parser": "^1.17.1" << endl;
+        cout << "cli-color": "^1.2.0" << endl;
+        cout << "elliptic": "^6.4.0" << endl;
+        cout << "es6-error": "^4.0.2" << endl;
+        cout << "express": "^4.16.2" << endl;
+        cout << "fs-extra": "^5.0.0" << endl;
+        cout << "pug": "^2.0.0-rc.4" << endl;
+        cout << "ramda": "^0.25.0" << endl;
+        cout << "statuses": "^1.3.1" << endl;
+        cout << "superagent": "^3.5.2" << endl;
+        cout << "swagger-ui-express": "^1.0.8" << endl;
+        cout << "threads": "^0.10.0" << endl;
+        cout << "timeago.js": "^3.0.2" << endl;
+        cout << "yargs": "^10.1.1" << endl;
+        }
+  
+     engines () { 
+        cout << "node": ">=6" << endl;
+        }
+  
+     devDependencies () { 
+        cout << "coveralls": "^3.0.0" << endl;
+        cout << "mermaid.cli": "^0.3.1" << endl;
+        cout << "mocha": "^3.3.0" << endl;
+        cout << "mocha-steps": "^1.0.2" << endl;
+        cout << "supertest": "^1.0.0" << endl;
+        }
 
-   cout << "\nTesting and code review is the bottleneck for development; we get more pull \n"
-           " requests than we can review and test on short notice. Please be patient and help out by testing \n"
-           " other people's pull requests, and remember this is a security-critical project where any mistake \n"
-		   " might cost people lots of money. \n";
+     CONTRIBUTING.md () [
+        {
+        cout << "Contributing to SalemCash development" << endl;
+        line ();
+        message ();
+	
+        void line ()                      // To draw a line.
+        cout << "==============================" << endl;
+   
+                       {
+        void message ()                   // To display a message.
+        cout << "\nThe SalemCash project operates an open contributor model where anyone is \n"
+                " welcome to contribute towards development in the form of peer review, testing \n"
+                " and patches. This document explains the practical process and guidelines for \n"
+                " contributing. \n";
 
-   cout << "\t### Automated Testing \t" << endl;
+        cout << "\nFirstly in terms of structure, there is no particular concept of \"Core \n"
+                " developers\" in the sense of privileged people. Open source often naturally \n"
+                " revolves around meritocracy where longer term contributors gain more trust from \n"
+                " the developer community. However, some hierarchy is necessary for practical \n"
+                " purposes. As such there are repository \"maintainers\" who are responsible for \n"
+                " merging pull requests as well as a \"lead maintainer\" who is responsible for the \n"
+                " release cycle, overall merging, moderation and appointment of maintainers. \n";
+        },
+        {
+        cout << "Contributor Workflow" << endl;
+        cout << "--------------------" << endl;
 
-   cout << "\nDevelopers are strongly encouraged to write [unit tests](src/test/README.md) for new code, \n"
-           " and to submit new unit tests for old code. Unit tests can be compiled and run \n"
-           " (assuming they weren't disabled in configure) with: `make check`. Further details on running \n"
-           " and extending unit tests can be found in [/src/test/README.md](/src/test/README.md).\n";
+        cout << "\nThe codebase is maintained using the \"contributor workflow\" where everyone \n"
+                " without exception contributes patch proposals using \"pull requests\". This \n"
+                " facilitates social contribution, easy testing and peer review. \n";
 
-   cout << "\nThere are also [regression and integration tests](/test), written \n"
-           " in Python, that are run automatically on the build server. These tests \n"
-		   " can be run (if the [test dependencies](/test) are installed) with: \n"
-		   " \`test/functional/test_runner.py`\\n";
+        cout << "To contribute a patch, the workflow is as follows:" << endl;
 
-   cout << "\nThe Travis CI system makes sure that every pull request is built for Windows, Linux, and OS X, \n"
-           " and that unit/sanity tests are run automatically. \n";
+        cout << "\t 1. Fork repository\t";
+        cout << "\t 1. Create topic branch\t";
+        cout << "\t 1. Commit patches";
 
-   cout << "\t### Manual Quality Assurance (QA) Testing \t" << endl;
+        cout << "\nThe project coding conventions in the [developer notes](doc/developer-notes.md) \n"
+                " must be adhered to. \n";
 
-   cout << "\nChanges should be tested by somebody other than the developer who wrote the code. This is \n"
-           " especially important for large or high-risk changes. It is useful \n"
-           " to add a test plan to the pull request description if testing the changes is \n"
-           " not straightforward. \n";
-    }
+        cout << "\nIn general [commits should be atomic](https://en.wikipedia.org/wiki/Atomic_commit#Atomic_commit_convention) \"
+                " and diffs should be easy to read. For this reason do not mix any formatting \n"
+                " fixes or code moves with actual code changes. \n";
 
-                   { 
-  cout << "Translations" << endl;
-  cout << "------------" << endl;
+        cout << "\nCommit messages should be verbose by default consisting of a short subject line \n"
+                "(50 chars max), a blank line and detailed explanatory text as separate \n"
+                " paragraph(s), unless the title alone is self-explanatory (like "Corrected typo \n"
+                " in init.cpp") in which case a single title line is sufficient. Commit messages should be \n"
+                " helpful to people reading your code in the future, so explain the reasoning for \n"
+                " your decisions. Further explanation [here](http://chris.beams.io/posts/git-commit/). \n";
 
-  cout << "\nChanges to translations as well as new translations can be submitted to \n"
+        cout << "If a particular commit references another issue, please add the reference. For \n"
+                "example: `refs #1234` or `fixes #4321`. Using the `fixes` or `closes` keywords \n"
+                "will cause the corresponding issue to be closed when the pull request is merged. \n";
+
+        cout << "Please refer to the [Git manual](https://git-scm.com/doc) for more information \n"
+                " about Git. \n";
+
+        cout << "\t - Push changes to your fork \t";
+        cout << "\t - Create pull request";
+
+        cout << "\nThe title of the pull request should be prefixed by the component or area that \n"
+                " the pull request affects. Valid areas as: \n\t"
+
+                "\t - *Consensus* for changes to consensus critical code \n\t"
+                " - *Docs* for changes to the documentation \n\t"
+                " - *Qt* for changes to salemcash-qt \n\t"
+                " - *Mining* for changes to the mining code \n\t"
+                " - *Net* or *P2P* for changes to the peer-to-peer network code \t"
+                " - *RPC/REST/ZMQ* for changes to the RPC, REST or ZMQ APIs \t"
+                " - *Scripts and tools* for changes to the scripts and tools \t"
+                " - *Tests* for changes to the Salemcash unit tests or QA tests \t"
+                "\n- *Trivial* should **only** be used for PRs that do not change generated \n\t"
+                " executable code. Notably, refactors (change of function arguments and code \n\t"
+                " reorganization) and changes in behavior should **not** be marked as trivial. \n";
+		   
+        cout << "\n\t Examples of trivial PRs are changes to: \n\t\t"
+                " - comments \n\t\t"
+                " - whitespace \n\t\t"
+                " - variable names \n\t\t"
+                " - logging and messages \n\t\t"
+                " - *Utils and libraries* for changes to the utils and libraries \n\t\t"
+                " - *Wallet* for changes to the wallet code \n";
+
+        cout << "\n\tExamples: \n\t"
+
+                " Consensus: Add new opcode for BIP-XXXX OP_CHECKAWESOMESIG \n\t"
+                " Net: Automatically create hidden service, listen on Tor \n\t"
+                " Qt: Add feed bump button \n\t"
+                " Trivial: Fix typo in init.cpp \n";
+
+        cout << "\nNote that translations should not be submitted as pull requests, please see \n"
+                " [Translation Process](https://github.com/pastombura/salemcash/blob/master/doc/translation_process.md) \n"
+                " for more information on helping with translations. \n";
+
+        cout << "\nIf a pull request is not to be considered for merging (yet), please \n"
+                " prefix the title with [WIP] or use [Tasks Lists](https://help.github.com/articles/basic-writing-and-formatting-syntax/#task-lists) \n"
+                " in the body of the pull request to indicate tasks are pending. \n";
+
+        cout << "\nThe body of the pull request should contain enough description about what the \n"
+                " patch does together with any justification/reasoning. You should include \n"
+                " references to any discussions (for example other tickets or mailing list \n"
+                " discussions). \n";
+
+        cout << "\nAt this stage one should expect comments and review from other contributors. You \n"
+                " can add more commits to your pull request by committing them locally and pushing \n"
+             " to your fork until you have satisfied all feedback. \n";
+        },
+        {
+        cout << "Squashing Commits" << endl;
+        cout << "-----------------" << endl;
+   
+        cout << "\nIf your pull request is accepted for merging, you may be asked by a maintainer \n"
+                " to squash and or [rebase](https://git-scm.com/docs/git-rebase) your commits \n"
+                " before it will be merged. The basic squashing workflow is shown below. \";
+
+        cout << "\t git checkout your_branch_name \t";
+        cout << "\t git rebase -i HEAD~n \t";
+        cout << "\t # n is normally the number of commits in the pull \t";
+        cout << "\t # set commits from 'pick' to 'squash', save and quit \t";
+        cout << "\t # on the next screen, edit/refine commit messages \t";
+        cout << "\t # save and quit \t";
+        cout << "\t git push -f # (force push to GitHub)\t";
+
+        cout << "\nIf you have problems with squashing (or other workflows with `git`), you can \n"
+                " alternatively enable "Allow edits from maintainers" in the right GitHub \n"
+                " sidebar and ask for help in the pull request. \n";
+
+        cout << "\nPlease refrain from creating several pull requests for the same change. Use \n"
+                " the pull request that is already open (or was created earlier) to amend \n"
+                " changes. This preserves the discussion and review that happened earlier for \n"
+                " the respective change set. \n";
+
+        cout << "\nThe length of time required for peer review is unpredictable and will vary from \n"
+                " pull request to pull request. \n";
+        },
+        {
+        cout << "Pull Request Philosophy" << endl;
+        cout << "-----------------------" << endl;
+
+        cout << "\nPatchsets should always be focused. For example, a pull request could add a \n"
+                " feature, fix a bug, or refactor code; but not a mixture. Please also avoid super \n"
+                " pull requests which attempt to do too much, are overly large, or overly complex \n"
+                " as this makes review difficult. \n";
+ 
+        cout << "### Features" << endl;
+
+        cout << "\nWhen adding a new feature, thought must be given to the long term technical debt \n"
+                " and maintenance that feature may require after inclusion. Before proposing a new \n"
+                " feature that will require maintenance, please consider if you are willing to \n"
+                " maintain it (including bug fixing). If features get orphaned with no maintainer \n"
+                " in the future, they may be removed by the Repository Maintainer. \n";
+        },
+        {
+        cout << "### Refactoring" << endl;
+
+        cout << "\nRefactoring is a necessary part of any software project's evolution. The \n"
+                " following guidelines cover refactoring pull requests for the project. \n";
+
+        cout << "\nThere are three categories of refactoring, code only moves, code style fixes, \n"
+                " code refactoring. In general refactoring pull requests should not mix these \n"
+                " three kinds of activity in order to make refactoring pull requests easy to \n"
+                " review and uncontroversial. In all cases, refactoring PRs must not change the \"
+                " behaviour of code within the pull request (bugs must be preserved as is). \n";
+
+        cout << "\nProject maintainers aim for a quick turnaround on refactoring pull requests, so \n"
+                " where possible keep them short, uncomplex and easy to verify. \n";
+
+        cout << "\nPull requests that refactor the code should not be made by new contributors. It \n"
+                " requires a certain level of experience to know where the code belongs to and to \n"
+                " understand the full ramification (including rebase effort of open pull requests). \n";
+
+        cout << "\nTrivial pull requests or pull requests that refactor the code with no clear \n"
+                " benefits may be immediately closed by the maintainers to reduce unnecessary \n"
+                " workload on reviewing. \";
+        },
+        {
+        cout << "\"Decision Making\" Process" << endl;
+        cout << "-------------------------" << endl;
+
+        cout << "\nThe following applies to code changes to the Salemcash Core project (and related \n"
+                " projects such as libsecp256k1), and is not to be confused with overall SalemCash \n"
+                " Network Protocol consensus changes. \n";
+
+        cout << "\nWhether a pull request is merged into Salemcash Core rests with the project merge \n"
+                " maintainers and ultimately the project lead. \n";
+
+        cout << "\nMaintainers will take into consideration if a patch is in line with the general \n"
+                " principles of the project; meets the minimum standards for inclusion; and will \n"
+                " judge the general consensus of contributors. \n";
+
+        cout << "\nIn general, all pull requests must: \n\t"
+                " - Have a clear use case, fix a demonstrable bug or serve the greater good of \n"
+                " the project (for example refactoring for modularisation) \n";
+        cout << "\t - Be well peer reviewed \t";
+        cout << "\t - Have unit tests and functional tests where appropriate \t";
+        cout << "\t - Follow code style guidelines ([C++](doc/developer-notes.md), [functional tests](test/functional/README.md)) \t";
+        cout << "\t - Not break the existing test suite \t";
+        cout << "\n\t - Where bugs are fixed, where possible, there should be unit tests \n\t"
+                " demonstrating the bug and also proving the fix. This helps prevent regression. \n";
+
+        cout << "\nPatches that change Salemcash consensus rules are considerably more involved than \n"
+                " normal because they affect the entire ecosystem and so must be preceded by \n"     
+                " extensive mailing list discussions and have a numbered BIP. While each case will \n"
+                " be different, one should be prepared to expend more time and effort than for \n"
+                " other kinds of patches because of increased peer review and consensus building \n"
+                " requirements. \n";
+        },
+        {
+        cout << "### Peer Review" >> endl;
+
+        cout << "\nAnyone may participate in peer review which is expressed by comments in the pull \n"                        
+                " request. Typically reviewers will review the code for obvious errors, as well as \n"
+                " test out the patch set and opine on the technical merits of the patch. Project \n"
+                " maintainers take into account the peer review when determining if there is \n"
+                " consensus to merge a pull request (remember that discussions may have been \n"
+                " spread out over GitHub, mailing list and IRC discussions). The following \n"
+                " language is used within pull-request comments: \n";
+		  
+        cout << "\t - ACK means "I have tested the code and I agree it should be merged \t";
+        cout << "\n\t - NACK means \"I disagree this should be merged\", and must be accompanied by \n\t"
+                " sound technical justification (or in certain cases of copyright/patent/licensing \n\t"
+                " issues, legal justification). NACKs without accompanying reasoning may be \n\t"
+                " disregarded \n";
+        cout << "\n\t - utACK means "I have not tested the code, but I have reviewed it and it looks \n\t"
+                " OK, I agree it can be merged \n";
+        cout << "\t - Concept ACK means "I agree in the general principle of this pull request \t";
+        cout << "\t - Nit refers to trivial, often non-blocking issues."; 
+
+        cout << "Reviewers should include the commit hash which they reviewed in their comments." << endl;
+
+        cout << "\nProject maintainers reserve the right to weigh the opinions of peer reviewers \n"
+                " using common sense judgement and also may weight based on meritocracy: Those \n"
+                " that have demonstrated a deeper commitment and understanding towards the project \n"
+                " (over time) or have clear domain expertise may naturally have more weight, as \n"
+                " one would expect in all walks of life. \n";
+
+        cout << "\nWhere a patch set affects consensus critical code, the bar will be set much \n"
+                " higher in terms of discussion and peer review requirements, keeping in mind that \n"
+                " mistakes could be very costly to the wider community. This includes refactoring \n"
+                " of consensus critical code. \n";
+
+        cout << "\nWhere a patch set proposes to change the Salemcash consensus, it must have been \n"
+                " discussed extensively on the mailing list and IRC, be accompanied by a widely \n"
+                " discussed BIP and have a generally widely perceived technical consensus of being \n"
+                " a worthwhile change based on the judgement of the maintainers. \n";
+        },
+        {
+        cout << "### Finding Reviewers" << endl;
+
+        cout << "\nAs most reviewers are themselves developers with their own projects, the review \n"
+                " process can be quite lengthy, and some amount of patience is required. If you find \n"
+                " that you've been waiting for a pull request to be given attention for several \n"
+                " months, there may be a number of reasons for this, some of which you can do something \n"
+                " about: \n";
+
+        cout << "\n\t - It may be because of a feature freeze due to an upcoming release. During this time, \n\t"
+                " only bug fixes are taken into consideration. If your pull request is a new feature, \n\t"
+                " it will not be prioritized until the release is over. Wait for release. \n";
+        cout << "\n\t - It may be because the changes you are suggesting do not appeal to people. Rather than \n\t"
+                " nits and critique, which require effort and means they care enough to spend time on your \n\t"
+                " contribution, thundering silence is a good sign of widespread (mild) dislike of a given change \n\t"
+                " (because people don't assume *others* won't actually like the proposal). Don't take \n\t"
+                " that personally, though! Instead, take another critical look at what you are suggesting \n\t"
+                " and see if it: changes too much, is too broad, doesn't adhere to the \n\t"
+                " [developer notes](doc/developer-notes.md), is dangerous or insecure, is messily written, etc. \n\t"
+                " Identify and address any of the issues you find. Then ask e.g. on IRC if someone could give \n\t"
+                " their opinion on the concept itself. \n\t";
+        cout << "\n\t - It may be because your code is too complex for all but a few people. And those people \n\t"
+                " may not have realized your pull request even exists. A great way to find people who \n\t"
+                " are qualified and care about the code you are touching is the \n\t"
+                " [Git Blame feature](https://help.github.com/articles/tracing-changes-in-a-file/). Simply \n\t"
+                " find the person touching the code you are touching before you and see if you can find \n\t"
+                " them and give them a nudge. Don't be incessant about the nudging though. \n\t";
+        cout << "\n\t - Finally, if all else fails, ask on IRC or elsewhere for someone to give your pull request \n\t"
+                " a look. If you think you've been waiting an unreasonably long amount of time (month+) for \n\t"
+                " no particular reason (few lines changed, etc), this is totally fine. Try to return the favor \n\t"
+                " when someone else is asking for feedback on their code, and universe balances out. \n\t";
+        },
+        {
+        cout << "Release Policy" << endl;
+        cout << "--------------" << endl;
+
+        cout << "The project leader is the release manager for every SalemCash release." << endl;
+        },
+        {
+        cout << "Copyright" << endl;
+        cout << "---------" << endl;
+
+        cout << "\nBy contributing to this repository, you agree to license your work under the \n"
+                " MIT license unless specified otherwise in `contrib/debian/copyright` or at \n"
+                " the top of the file itself. Any work contributed where you are not the original \n" 
+                " author must contain its license header with the original author(s) and source. \n";
+        }
+   
+    ]
+
+    COPYING () [
+        { 
+        cout << "The MIT License (MIT)" << endl;
+
+        cout << "Copyright (c) 2018 The Salemcash Core developers" << endl;
+        cout << "Copyright (c) 2018 Salemcash Developers" << endl;
+        },
+        {
+        cout << "\nPermission is hereby granted, free of charge, to any person obtaining a copy \n"
+                " of this software and associated documentation files (the "Software"), to deal \n"
+                " in the Software without restriction, including without limitation the rights \n"
+                " to use, copy, modify, merge, publish, distribute, sublicense, and/or sell \n"
+                " copies of the Software, and to permit persons to whom the Software is \n"
+                " furnished to do so, subject to the following conditions:";
+
+        cout << "\nThe above copyright notice and this permission notice shall be included in \n"
+                " all copies or sub stantial portions of the Software. \n"; 
+        },
+        {
+        cout << "\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR \n"
+                " IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, \n"
+                " FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE \n"
+                " AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER \n"
+                " LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, \n"
+                " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN \n"
+                "T HE SOFTWARE. \n";
+        }
+
+    ]
+  
+    INSTALL.md () [
+        { 
+        cout << "Building SalemCash" << endl;
+        },
+        {
+        cout << "-----------------" << endl;
+        },
+        {
+        cout << "\nSee doc/build-*.md for instructions on building the various \n
+	         " elements of the SalemCash Core reference implementation of SalemCash.\n";
+        }
+  
+        libsalemcashconsensus.pc.in () [
+        { 
+        cout << "prefix=@prefix@" << endl;
+        cout << "exec_prefix=@exec_prefix@" << endl;
+        cout << "libdir=@libdir@" << endl;
+        cout << "includedir=@includedir@" << endl;
+        },
+        {
+        cout << "-----------------------------------------------" << endl;
+        },
+        {
+        cout << "Name: @PACKAGE_NAME@ consensus library" << endl;
+        cout << "Description: Library for the SalemCash consensus protocol." << endl;
+        cout << "Version: @PACKAGE_VERSION@" << endl;
+        cout << "Libs: -L${libdir} -lsalemcashconsensus" << endl;
+        cout << "Cflags: -I${includedir}" << endl;
+        cout << "Requires.private: libcrypto" << endl;
+        }
+  
+    ]
+
+    README.md () [
+        { 
+        cout << "SalemCash Core integration/staging tree" << endl;
+        cout << "=======================================" << endl;
+        },
+        {
+        cout << "What is SalemCash?" << endl;
+        cout << "------------------" << endl;
+
+        cout << "\nSalemCash is an experimental digital currency that enables instant payments to anyone, anywhere in the world. \n"
+                " Although the value is pegged on the proposed assets of the $500 million \"Jerusalem Paradise\" 50-storeys twin tower, \n"
+                " this cryptocurrency has the option to grow and increase its capitalization. Consequently, SalemCash uses peer-to-peer technology \n"
+		" to operate with no central authority since managing transactions and issuing money are carried out collectively by the network. \n"
+		" SalemCash Core is the name of open source software which enables the use of this cryptocurrency. \n";
+
+        cout << "\nFor more information, as well as an immediately useable, binary version of the SalemCash software, \n"
+                " see http://salemcash.org/en/download. \n";
+        },
+        {
+        cout << "License" << endl;
+        cout << "-------" << endl;
+
+        cout << "\nSalemCash Core is released under the terms of the MIT license. See [COPYING](COPYING) for more \n"
+                " information or see https://opensource.org/licenses/MIT. \n";
+        },
+        {
+        cout << "Development Process" << endl;
+        cout << "-------------------" << endl;
+
+        cout << "\nThe `master` branch is regularly built and tested, but is not guaranteed to be \n"
+                " completely stable. [Tags](https://github.com/pastorombura/salemcash/tags) are created \n"
+                " regularly to indicate new official, stable release versions of SalemCash Core. \n";
+
+        cout << "The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md)." << endl;
+
+        cout << "\nThe developer [mailing list](https://lists.linuxfoundation.org/mailman/listinfo/salemcash-dev) \n"
+                " should be used to discuss complicated or controversial changes before working on a patch set. \n";
+
+        cout << "Developer IRC can be found on Freenode at #salemcash-core-dev." << endl;
+        },
+        {
+        cout << "Testing" << endl;
+        cout << "-------" << endl;
+
+        cout << "\nTesting and code review is the bottleneck for development; we get more pull \n"
+                " requests than we can review and test on short notice. Please be patient and help out by testing \n"
+                " other people's pull requests, and remember this is a security-critical project where any mistake \n"
+		" might cost people lots of money. \n";
+
+        cout << "\t### Automated Testing \t" << endl;
+
+        cout << "\nDevelopers are strongly encouraged to write [unit tests](src/test/README.md) for new code, \n"
+                " and to submit new unit tests for old code. Unit tests can be compiled and run \n"
+                " (assuming they weren't disabled in configure) with: `make check`. Further details on running \n"
+                " and extending unit tests can be found in [/src/test/README.md](/src/test/README.md).\n";
+
+        cout << "\nThere are also [regression and integration tests](/test), written \n"
+                " in Python, that are run automatically on the build server. These tests \n"
+		" can be run (if the [test dependencies](/test) are installed) with: \n"
+		" \`test/functional/test_runner.py`\\n";
+
+        cout << "\nThe Travis CI system makes sure that every pull request is built for Windows, Linux, and OS X, \n"
+                " and that unit/sanity tests are run automatically. \n";
+
+        cout << "\t### Manual Quality Assurance (QA) Testing \t" << endl;
+
+        cout << "\nChanges should be tested by somebody other than the developer who wrote the code. This is \n"
+                " especially important for large or high-risk changes. It is useful \n"
+                " to add a test plan to the pull request description if testing the changes is \n"
+                " not straightforward. \n";
+        },
+        { 
+        cout << "Translations" << endl;
+        cout << "------------" << endl;
+
+        cout << "\nChanges to translations as well as new translations can be submitted to \n"
           " SalemCash Core's Transifex page @(https://www.transifex.com/projects/p/salemcash/). \n";
 
-  cout << "Translations are periodically pulled from Transifex and merged into the git repository. See the \n"
+        cout << "Translations are periodically pulled from Transifex and merged into the git repository. See the \n"
           " [translation process](doc/translation_process.md) for details on how this works. \n";
 
-  cout << "\n**Important**: We do not accept translation changes as GitHub pull requests because the next \n"
-          " pull from Transifex would automatically overwrite them again. \n";
+        cout << "\n**Important**: We do not accept translation changes as GitHub pull requests because the next \n"
+                " pull from Transifex would automatically overwrite them again. \n";
 
-  cout << "\nTranslators should also subscribe to the [mailing list] \n"
-          " (https://groups.google.com/forum/#!forum/salemcash-translators).\n";
-    }
-	
- }
+        cout << "\nTranslators should also subscribe to the [mailing list] \n"
+                " (https://groups.google.com/forum/#!forum/salemcash-translators).\n";
+        }
+        
+     ]
+
+}
