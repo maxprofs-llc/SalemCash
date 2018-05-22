@@ -305,14 +305,14 @@ SetupDummyInputs(CBasicKeyStore& keystoreRet, CCashViewCache& cashRet)
     dummyTransactions[0].vout[0].scriptPubKey << ToByteVector(key[0].GetPubKey()) << OP_CHECKSIG;
     dummyTransactions[0].vout[1].nValue = 50*CENT;
     dummyTransactions[0].vout[1].scriptPubKey << ToByteVector(key[1].GetPubKey()) << OP_CHECKSIG;
-    AddCoins(coinsRet, dummyTransactions[0], 0);
+    AddCash(cashRet, dummyTransactions[0], 0);
 
     dummyTransactions[1].vout.resize(2);
     dummyTransactions[1].vout[0].nValue = 21*CENT;
     dummyTransactions[1].vout[0].scriptPubKey = GetScriptForDestination(key[2].GetPubKey().GetID());
     dummyTransactions[1].vout[1].nValue = 22*CENT;
     dummyTransactions[1].vout[1].scriptPubKey = GetScriptForDestination(key[3].GetPubKey().GetID());
-    AddCoins(coinsRet, dummyTransactions[1], 0);
+    AddCash(cashRet, dummyTransactions[1], 0);
 
     return dummyTransactions;
 }
@@ -339,8 +339,8 @@ BOOST_AUTO_TEST_CASE(test_Get)
     t1.vout[0].nValue = 90*CENT;
     t1.vout[0].scriptPubKey << OP_1;
 
-    BOOST_CHECK(AreInputsStandard(t1, coins));
-    BOOST_CHECK_EQUAL(coins.GetValueIn(t1), (50+21+22)*CENT);
+    BOOST_CHECK(AreInputsStandard(t1, cash));
+    BOOST_CHECK_EQUAL(cash.GetValueIn(t1), (50+21+22)*CENT);
 }
 
 void CreateCreditAndSpend(const CKeyStore& keystore, const CScript& outscript, CTransactionRef& output, CMutableTransaction& input, bool success = true)
@@ -674,7 +674,7 @@ BOOST_AUTO_TEST_CASE(test_IsStandard)
     CBasicKeyStore keystore;
     CCashView cashDummy;
     CCashViewCache cash(&cashDummy);
-    std::vector<CMutableTransaction> dummyTransactions = SetupDummyInputs(keystore, coins);
+    std::vector<CMutableTransaction> dummyTransactions = SetupDummyInputs(keystore, cash);
 
     CMutableTransaction t;
     t.vin.resize(1);

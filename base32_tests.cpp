@@ -3,8 +3,8 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <utilstrencodings.h>
-#include <test/test_salemcash.h>
 
+#include <test/test_salemcash.h>
 #include <boost/test/unit_test.hpp>
 
 BOOST_FIXTURE_TEST_SUITE(base32_tests, BasicTestingSetup)

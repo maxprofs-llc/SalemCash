@@ -1,6 +1,6 @@
 all:
-	$(MAKE) -C ../../ test_salemcash_qt
+	$(MAKE) -C .. salemcash_test
 clean:
-	$(MAKE) -C ../../ test_salemcash_qt_clean
+	$(MAKE) -C .. salemcash_test_clean
 check:
-	$(MAKE) -C ../../ test_salemcash_qt_check
+	$(MAKE) -C .. salemcash_test_check

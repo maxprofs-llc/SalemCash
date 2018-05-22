@@ -163,7 +163,7 @@ int test_one_input(std::vector<uint8_t> buffer) {
             } catch (const std::ios_base::failure& e) {return 0;}
             break;
         }
-        case CCOINS_DESERIALIZE:
+        case CCASH_DESERIALIZE:
         {
             try
             {

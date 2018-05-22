@@ -7,7 +7,7 @@
 #include <uint256.h>
 #include <undo.h>
 #include <utilstrencodings.h>
-#include <test/test_bitcoin.h>
+#include <test/test_Salemcash.h>
 #include <validation.h>
 #include <consensus/validation.h>
 
@@ -100,7 +100,7 @@ BOOST_FIXTURE_TEST_SUITE(cash_tests, BasicTestingSetup)
 static const unsigned int NUM_SIMULATION_ITERATIONS = 40000;
 
 // This is a large randomized insert/remove simulation test on a variable-size
-// stack of caches on top of CCoinsViewTest.
+// stack of caches on top of CCashViewTest.
 //
 // It will randomly create/update/delete Cash entries to a tip of caches, with
 // txids picked from a limited list of random 256-bit hashes. Occasionally, a
@@ -108,7 +108,7 @@ static const unsigned int NUM_SIMULATION_ITERATIONS = 40000;
 //
 // During the process, booleans are kept to make sure that the randomized
 // operation hits all branches.
-BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
+BOOST_AUTO_TEST_CASE(cash_cache_simulation_test)
 {
     // Various coverage trackers.
     bool removed_all_caches = false;
@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
     std::map<COutPoint, Cash> result;
 
     // The cache stack.
-    CCashViewTest base; // A CCoinsViewTest at the bottom.
+    CCashViewTest base; // A CCashViewTest at the bottom.
     std::vector<CCashViewCacheTest*> stack; // A stack of CCashViewCaches on top.
     stack.push_back(new CCashViewCacheTest(&base)); // Start with one cache.
 
@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
             bool test_havecash_after = InsecureRandBits(2) == 0;
 
             bool result_havecash = test_havecash_before ? stack.back()->HaveCash(COutPoint(txid, 0)) : false;
-            const Cash& entry = (InsecureRandRange(500) == 0) ? AccessByTxid(*stack.back(), txid) : stack.back()->AccessCoin(COutPoint(txid, 0));
+            const Cash& entry = (InsecureRandRange(500) == 0) ? AccessByTxid(*stack.back(), txid) : stack.back()->AccessCash(COutPoint(txid, 0));
             BOOST_CHECK(cash == entry);
             BOOST_CHECK(!test_havecash_before || result_havecash == !entry.IsSpent());
 
@@ -171,7 +171,7 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
                     (cash.IsSpent() ? added_an_entry : updated_an_entry) = true;
                     cash = newcash;
                 }
-                stack.back()->AddCash(COutPoint(txid, 0), std::move(newcoin), !cash.IsSpent() || InsecureRand32() & 1);
+                stack.back()->AddCash(COutPoint(txid, 0), std::move(newcash), !cash.IsSpent() || InsecureRand32() & 1);
             } else {
                 removed_an_entry = true;
                 cash.Clear();
@@ -191,7 +191,7 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
         if (InsecureRandRange(1000) == 1 || i == NUM_SIMULATION_ITERATIONS - 1) {
             for (const auto& entry : result) {
                 bool have = stack.back()->HaveCash(entry.first);
-                const Cash& cash = stack.back()->AccessCoin(entry.first);
+                const Cash& cash = stack.back()->AccessCash(entry.first);
                 BOOST_CHECK(have == !cash.IsSpent());
                 BOOST_CHECK(cash == entry.second);
                 if (cash.IsSpent()) {
@@ -276,7 +276,7 @@ UtxoData::iterator FindRandomFrom(const std::set<COutPoint> &utxoSet) {
 // random txs are created and UpdateCash is used to update the cache stack
 // In particular it is tested that spending a duplicate cashbase tx
 // has the expected effect (the other duplicate is overwritten at all cache levels)
-BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
+BOOST_AUTO_TEST_CASE(updatecash_simulation_test)
 {
     bool spent_a_duplicate_cashbase = false;
     // A simple map to track what we expect the cache stack to represent.
@@ -304,7 +304,7 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
             tx.vout[0].nValue = i; //Keep txs unique unless intended to duplicate
             tx.vout[0].scriptPubKey.assign(InsecureRand32() & 0x3F, 0); // Random sizes so we can test memory usage accounting
             unsigned int height = InsecureRand32();
-            Coin old_coin;
+            Cash old_cash;
 
             // 2/20 times create a new cashbase
             if (randiter % 20 < 2 || cashbase_cash.size() < 10) {
@@ -321,7 +321,7 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
                 else {
                     cashbase_cash.insert(COutPoint(tx.GetHash(), 0));
                 }
-                assert(CTransaction(tx).IsCoinBase());
+                assert(CTransaction(tx).IsCashBase());
             }
 
             // 17/20 times reconnect previous or add a regular tx
@@ -333,14 +333,14 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
                     auto utxod = FindRandomFrom(disconnected_cash);
                     tx = std::get<0>(utxod->second);
                     prevout = tx.vin[0].prevout;
-                    if (!CTransaction(tx).IsCoinBase() && !utxoset.count(prevout)) {
+                    if (!CTransaction(tx).IsCashBase() && !utxoset.count(prevout)) {
                         disconnected_cash.erase(utxod->first);
                         continue;
                     }
 
                     // If this tx is already IN the UTXO, then it must be a cashbase, and it must be a duplicate
                     if (utxoset.count(utxod->first)) {
-                        assert(CTransaction(tx).IsCoinBase());
+                        assert(CTransaction(tx).IsCashBase());
                         assert(duplicate_cash.count(utxod->first));
                     }
                     disconnected_cash.erase(utxod->first);
@@ -353,10 +353,10 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
 
                     // Construct the tx to spend the cash of prevouthash
                     tx.vin[0].prevout = prevout;
-                    assert(!CTransaction(tx).IsCoinBase());
+                    assert(!CTransaction(tx).IsCashBase());
                 }
                 // In this simple test cash only have two states, spent or unspent, save the unspent state to restore
-                old_coin = result[prevout];
+                old_cash = result[prevout];
                 // Update the expected result of prevouthash to know these coins are spent
                 result[prevout].Clear();
 
@@ -369,10 +369,10 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
                 }
 
             }
-            // Update the expected result to know about the new output coins
+            // Update the expected result to know about the new output cash
             assert(tx.vout.size() == 1);
             const COutPoint outpoint(tx.GetHash(), 0);
-            result[outpoint] = Cash(tx.vout[0], height, CTransaction(tx).IsCoinBase());
+            result[outpoint] = Cash(tx.vout[0], height, CTransaction(tx).IsCashBase());
 
             // Call UpdateCash on the top cache
             CTxUndo undo;
@@ -382,7 +382,7 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
             utxoset.insert(outpoint);
 
             // Track this tx and undo info to use later
-            utxoData.emplace(outpoint, std::make_tuple(tx,undo,old_coin));
+            utxoData.emplace(outpoint, std::make_tuple(tx,undo,old_cash));
         } else if (utxoset.size()) {
             //1/20 times undo a previous transaction
             auto utxod = FindRandomFrom(utxoset);
@@ -394,17 +394,17 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
             // Update the expected result
             // Remove new outputs
             result[utxod->first].Clear();
-            // If not coinbase restore prevout
-            if (!tx.IsCoinBase()) {
-                result[tx.vin[0].prevout] = orig_coin;
+            // If not cashbase restore prevout
+            if (!tx.IsCashBase()) {
+                result[tx.vin[0].prevout] = orig_cash;
             }
 
             // Disconnect the tx from the current UTXO
             // See code in DisconnectBlock
             // remove outputs
-            stack.back()->SpendCoin(utxod->first);
+            stack.back()->SpendCash(utxod->first);
             // restore inputs
-            if (!tx.IsCoinBase()) {
+            if (!tx.IsCashBase()) {
                 const COutPoint &out = tx.vin[0].prevout;
                 Cash cash = undo.vprevout[0];
                 ApplyTxInUndo(std::move(cash), *(stack.back()), out);
@@ -414,15 +414,15 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
 
             // Update the utxoset
             utxoset.erase(utxod->first);
-            if (!tx.IsCoinBase())
+            if (!tx.IsCashBase())
                 utxoset.insert(tx.vin[0].prevout);
         }
 
         // Once every 1000 iterations and at the end, verify the full cache.
         if (InsecureRandRange(1000) == 1 || i == NUM_SIMULATION_ITERATIONS - 1) {
             for (const auto& entry : result) {
-                bool have = stack.back()->HaveCoin(entry.first);
-                const Cash& cash = stack.back()->AccessCoin(entry.first);
+                bool have = stack.back()->HaveCash(entry.first);
+                const Cash& cash = stack.back()->AccessCash(entry.first);
                 BOOST_CHECK(have == !cash.IsSpent());
                 BOOST_CHECK(cash == entry.second);
             }
@@ -433,7 +433,7 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
             stack[InsecureRand32() % stack.size()]->Uncache(FindRandomFrom(utxoset)->first);
         }
         if (disconnected_cash.size() > 1 && InsecureRandRange(30) == 0) {
-            stack[InsecureRand32() % stack.size()]->Uncache(FindRandomFrom(disconnected_coins)->first);
+            stack[InsecureRand32() % stack.size()]->Uncache(FindRandomFrom(disconnected_cash)->first);
         }
         if (duplicate_cash.size() > 1 && InsecureRandRange(30) == 0) {
             stack[InsecureRand32() % stack.size()]->Uncache(FindRandomFrom(duplicate_cash)->first);
@@ -470,7 +470,7 @@ BOOST_AUTO_TEST_CASE(updatecoins_simulation_test)
     }
 
     // Verify coverage.
-    BOOST_CHECK(spent_a_duplicate_coinbase);
+    BOOST_CHECK(spent_a_duplicate_cashbase);
 }
 
 BOOST_AUTO_TEST_CASE(ccash_serialization)
@@ -518,7 +518,7 @@ BOOST_AUTO_TEST_CASE(ccash_serialization)
     BOOST_CHECK_EQUAL(HexStr(tmp.begin(), tmp.end()), "8a95c0bb00");
     CDataStream ss5(ParseHex("00008a95c0bb00"), SER_DISK, CLIENT_VERSION);
     try {
-        Coin cc5;
+        Cash cc5;
         ss5 >> cc5;
         BOOST_CHECK_MESSAGE(false, "We should have thrown");
     } catch (const std::ios_base::failure& e) {
@@ -596,8 +596,8 @@ class SingleEntryCacheTest
 public:
     SingleEntryCacheTest(CAmount base_value, CAmount cache_value, char cache_flags)
     {
-        WriteCoinsViewEntry(base, base_value, base_value == ABSENT ? NO_ENTRY : DIRTY);
-        cache.usage() += InsertCoinsMapEntry(cache.map(), cache_value, cache_flags);
+        WriteCashViewEntry(base, base_value, base_value == ABSENT ? NO_ENTRY : DIRTY);
+        cache.usage() += InsertCashsMapEntry(cache.map(), cache_value, cache_flags);
     }
 
     CCashView root;
@@ -716,7 +716,7 @@ void CheckAddCashBase(CAmount base_value, CAmount cache_value, CAmount modify_va
     try {
         CTxOut output;
         output.nValue = modify_value;
-        test.cache.AddCoin(OUTPOINT, Cash(std::move(output), 1, cashbase), cashbase);
+        test.cache.AddCash(OUTPOINT, Cash(std::move(output), 1, cashbase), cashbase);
         test.cache.SelfTest();
         GetCashMapEntry(test.cache.map(), result_value, result_flags);
     } catch (std::logic_error& e) {
@@ -852,7 +852,7 @@ BOOST_AUTO_TEST_CASE(ccash_write)
         for (CAmount child_value : {ABSENT, PRUNED, VALUE2})
             for (char parent_flags : parent_value == ABSENT ? ABSENT_FLAGS : FLAGS)
                 for (char child_flags : child_value == ABSENT ? ABSENT_FLAGS : CLEAN_FLAGS)
-                    CheckWriteCoins(parent_value, child_value, parent_value, parent_flags, child_flags, parent_flags);
+                    CheckWriteCash(parent_value, child_value, parent_value, parent_flags, child_flags, parent_flags);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

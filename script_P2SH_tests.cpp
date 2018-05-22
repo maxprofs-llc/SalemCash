@@ -337,9 +337,9 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     txTo.vin[3].scriptSig << OP_11 << OP_11 << std::vector<unsigned char>(oneAndTwo.begin(), oneAndTwo.end());
     txTo.vin[4].scriptSig << std::vector<unsigned char>(fifteenSigops.begin(), fifteenSigops.end());
 
-    BOOST_CHECK(::AreInputsStandard(txTo, coins));
+    BOOST_CHECK(::AreInputsStandard(txTo, Cash));
     // 22 P2SH sigops for all inputs (1 for vin[0], 6 for vin[3], 15 for vin[4]
-    BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txTo, coins), 22U);
+    BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txTo, Cash), 22U);
 
     CMutableTransaction txToNonStd1;
     txToNonStd1.vout.resize(1);
@@ -350,8 +350,8 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     txToNonStd1.vin[0].prevout.hash = txFrom.GetHash();
     txToNonStd1.vin[0].scriptSig << std::vector<unsigned char>(sixteenSigops.begin(), sixteenSigops.end());
 
-    BOOST_CHECK(!::AreInputsStandard(txToNonStd1, coins));
-    BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txToNonStd1, coins), 16U);
+    BOOST_CHECK(!::AreInputsStandard(txToNonStd1, Cash));
+    BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txToNonStd1, Cash), 16U);
 
     CMutableTransaction txToNonStd2;
     txToNonStd2.vout.resize(1);
@@ -362,8 +362,8 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     txToNonStd2.vin[0].prevout.hash = txFrom.GetHash();
     txToNonStd2.vin[0].scriptSig << std::vector<unsigned char>(twentySigops.begin(), twentySigops.end());
 
-    BOOST_CHECK(!::AreInputsStandard(txToNonStd2, coins));
-    BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txToNonStd2, coins), 20U);
+    BOOST_CHECK(!::AreInputsStandard(txToNonStd2, Cash));
+    BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txToNonStd2, Cash), 20U);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

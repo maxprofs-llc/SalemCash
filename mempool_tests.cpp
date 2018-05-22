@@ -125,28 +125,28 @@ BOOST_AUTO_TEST_CASE(MempoolIndexingTest)
     CMutableTransaction tx1 = CMutableTransaction();
     tx1.vout.resize(1);
     tx1.vout[0].scriptPubKey = CScript() << OP_11 << OP_EQUAL;
-    tx1.vout[0].nValue = 10 * COIN;
+    tx1.vout[0].nValue = 10 * CASH;
     pool.addUnchecked(tx1.GetHash(), entry.Fee(10000LL).FromTx(tx1));
 
     /* highest fee */
     CMutableTransaction tx2 = CMutableTransaction();
     tx2.vout.resize(1);
     tx2.vout[0].scriptPubKey = CScript() << OP_11 << OP_EQUAL;
-    tx2.vout[0].nValue = 2 * COIN;
+    tx2.vout[0].nValue = 2 * CASH;
     pool.addUnchecked(tx2.GetHash(), entry.Fee(20000LL).FromTx(tx2));
 
     /* lowest fee */
     CMutableTransaction tx3 = CMutableTransaction();
     tx3.vout.resize(1);
     tx3.vout[0].scriptPubKey = CScript() << OP_11 << OP_EQUAL;
-    tx3.vout[0].nValue = 5 * COIN;
+    tx3.vout[0].nValue = 5 * CASH;
     pool.addUnchecked(tx3.GetHash(), entry.Fee(0LL).FromTx(tx3));
 
     /* 2nd highest fee */
     CMutableTransaction tx4 = CMutableTransaction();
     tx4.vout.resize(1);
     tx4.vout[0].scriptPubKey = CScript() << OP_11 << OP_EQUAL;
-    tx4.vout[0].nValue = 6 * COIN;
+    tx4.vout[0].nValue = 6 * CASH;
     pool.addUnchecked(tx4.GetHash(), entry.Fee(15000LL).FromTx(tx4));
 
     /* equal fee rate to tx1, but newer */
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(MempoolIndexingTest)
     CMutableTransaction tx6 = CMutableTransaction();
     tx6.vout.resize(1);
     tx6.vout[0].scriptPubKey = CScript() << OP_11 << OP_EQUAL;
-    tx6.vout[0].nValue = 20 * COIN;
+    tx6.vout[0].nValue = 20 * CASH;
     pool.addUnchecked(tx6.GetHash(), entry.Fee(0LL).FromTx(tx6));
     BOOST_CHECK_EQUAL(pool.size(), 6);
     // Check that at this point, tx6 is sorted low

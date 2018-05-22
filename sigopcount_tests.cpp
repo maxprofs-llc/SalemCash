@@ -80,9 +80,9 @@ ScriptError VerifyWithFlag(const CTransaction& output, const CMutableTransaction
 /**
  * Builds a creationTx from scriptPubKey and a spendingTx from scriptSig
  * and witness such that spendingTx spends output zero of creationTx.
- * Also inserts creationTx's output into the coins view.
+ * Also inserts creationTx's output into the Cash view.
  */
-void BuildTxs(CMutableTransaction& spendingTx, CCoinsViewCache& coins, CMutableTransaction& creationTx, const CScript& scriptPubKey, const CScript& scriptSig, const CScriptWitness& witness)
+void BuildTxs(CMutableTransaction& spendingTx, CCashViewCache& Cash, CMutableTransaction& creationTx, const CScript& scriptPubKey, const CScript& scriptSig, const CScriptWitness& witness)
 {
     creationTx.nVersion = 1;
     creationTx.vin.resize(1);
@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(GetTxSigOpCost)
     CMutableTransaction spendingTx;
 
     // Create utxo set
-    CCashView coinsDummy;
+    CCashView CashDummy;
     CCashViewCache cash(&cashDummy);
     // Create key
     CKey key;

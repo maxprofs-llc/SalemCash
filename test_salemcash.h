@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef SALEMCASH_TEST_TEST_BITCOIN_H
-#define SALEMCASH_TEST_TEST_BITCOIN_H
+#ifndef SALEMCASH_TEST_TEST_SALEMCASH_H
+#define SALEMCASH_TEST_TEST_SALEMCASH_H
 
 #include <chainparamsbase.h>
 #include <fs.h>
@@ -46,7 +46,7 @@ struct BasicTestingSetup {
 };
 
 /** Testing setup that configures a complete environment.
- * Included are data directory, coins database, script check threads setup.
+ * Included are data directory, cash database, script check threads setup.
  */
 class CConnman;
 class CNode;
@@ -103,7 +103,7 @@ struct TestMemPoolEntryHelper
 
     TestMemPoolEntryHelper() :
         nFee(0), nTime(0), nHeight(1),
-        spendsCoinbase(false), sigOpCost(4) { }
+        spendsCashbase(false), sigOpCost(4) { }
 
     CTxMemPoolEntry FromTx(const CMutableTransaction &tx);
     CTxMemPoolEntry FromTx(const CTransaction &tx);
@@ -112,7 +112,7 @@ struct TestMemPoolEntryHelper
     TestMemPoolEntryHelper &Fee(CAmount _fee) { nFee = _fee; return *this; }
     TestMemPoolEntryHelper &Time(int64_t _time) { nTime = _time; return *this; }
     TestMemPoolEntryHelper &Height(unsigned int _height) { nHeight = _height; return *this; }
-    TestMemPoolEntryHelper &SpendsCoinbase(bool _flag) { spendsCoinbase = _flag; return *this; }
+    TestMemPoolEntryHelper &SpendsCashbase(bool _flag) { spendsCashbase = _flag; return *this; }
     TestMemPoolEntryHelper &SigOpsCost(unsigned int _sigopsCost) { sigOpCost = _sigopsCost; return *this; }
 };
 
