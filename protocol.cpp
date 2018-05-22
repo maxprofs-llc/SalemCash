@@ -1,201 +1,152 @@
-// Copyright (c) 2018 The SalemCash developers
+// Copyright (c) 2018 The Salemcash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <protocol.h>
+#include <rpc/protocol.h>
 
+#include <random.h>
+#include <tinyformat.h>
 #include <util.h>
 #include <utilstrencodings.h>
+#include <utiltime.h>
+#include <version.h>
 
-#ifndef WIN32
-# include <arpa/inet.h>
-#endif
+#include <fstream>
 
-static std::atomic<bool> g_initial_block_download_completed(false);
-
-namespace NetMsgType {
-const char *VERSION="version";
-const char *VERACK="verack";
-const char *ADDR="addr";
-const char *INV="inv";
-const char *GETDATA="getdata";
-const char *MERKLEBLOCK="merkleblock";
-const char *GETBLOCKS="getblocks";
-const char *GETHEADERS="getheaders";
-const char *TX="tx";
-const char *HEADERS="headers";
-const char *BLOCK="block";
-const char *GETADDR="getaddr";
-const char *MEMPOOL="mempool";
-const char *PING="ping";
-const char *PONG="pong";
-const char *NOTFOUND="notfound";
-const char *FILTERLOAD="filterload";
-const char *FILTERADD="filteradd";
-const char *FILTERCLEAR="filterclear";
-const char *REJECT="reject";
-const char *SENDHEADERS="sendheaders";
-const char *FEEFILTER="feefilter";
-const char *SENDCMPCT="sendcmpct";
-const char *CMPCTBLOCK="cmpctblock";
-const char *GETBLOCKTXN="getblocktxn";
-const char *BLOCKTXN="blocktxn";
-} // namespace NetMsgType
-
-/** All known message types. Keep this in the same order as the list of
- * messages above and in protocol.h.
+/**
+ * JSON-RPC protocol.  Salemcash speaks version 1.0 for maximum compatibility,
+ * but uses JSON-RPC 1.1/2.0 standards for parts of the 1.0 standard that were
+ * unspecified (HTTP errors and contents of 'error').
+ *
+ * 1.0 spec: http://json-rpc.org/wiki/specification
+ * 1.2 spec: http://jsonrpc.org/historical/json-rpc-over-http.html
  */
-const static std::string allNetMessageTypes[] = {
-    NetMsgType::VERSION,
-    NetMsgType::VERACK,
-    NetMsgType::ADDR,
-    NetMsgType::INV,
-    NetMsgType::GETDATA,
-    NetMsgType::MERKLEBLOCK,
-    NetMsgType::GETBLOCKS,
-    NetMsgType::GETHEADERS,
-    NetMsgType::TX,
-    NetMsgType::HEADERS,
-    NetMsgType::BLOCK,
-    NetMsgType::GETADDR,
-    NetMsgType::MEMPOOL,
-    NetMsgType::PING,
-    NetMsgType::PONG,
-    NetMsgType::NOTFOUND,
-    NetMsgType::FILTERLOAD,
-    NetMsgType::FILTERADD,
-    NetMsgType::FILTERCLEAR,
-    NetMsgType::REJECT,
-    NetMsgType::SENDHEADERS,
-    NetMsgType::FEEFILTER,
-    NetMsgType::SENDCMPCT,
-    NetMsgType::CMPCTBLOCK,
-    NetMsgType::GETBLOCKTXN,
-    NetMsgType::BLOCKTXN,
-};
-const static std::vector<std::string> allNetMessageTypesVec(allNetMessageTypes, allNetMessageTypes+ARRAYLEN(allNetMessageTypes));
 
-CMessageHeader::CMessageHeader(const MessageStartChars& pchMessageStartIn)
+UniValue JSONRPCRequestObj(const std::string& strMethod, const UniValue& params, const UniValue& id)
 {
-    memcpy(pchMessageStart, pchMessageStartIn, MESSAGE_START_SIZE);
-    memset(pchCommand, 0, sizeof(pchCommand));
-    nMessageSize = -1;
-    memset(pchChecksum, 0, CHECKSUM_SIZE);
+    UniValue request(UniValue::VOBJ);
+    request.pushKV("method", strMethod);
+    request.pushKV("params", params);
+    request.pushKV("id", id);
+    return request;
 }
 
-CMessageHeader::CMessageHeader(const MessageStartChars& pchMessageStartIn, const char* pszCommand, unsigned int nMessageSizeIn)
+UniValue JSONRPCReplyObj(const UniValue& result, const UniValue& error, const UniValue& id)
 {
-    memcpy(pchMessageStart, pchMessageStartIn, MESSAGE_START_SIZE);
-    memset(pchCommand, 0, sizeof(pchCommand));
-    strncpy(pchCommand, pszCommand, COMMAND_SIZE);
-    nMessageSize = nMessageSizeIn;
-    memset(pchChecksum, 0, CHECKSUM_SIZE);
+    UniValue reply(UniValue::VOBJ);
+    if (!error.isNull())
+        reply.pushKV("result", NullUniValue);
+    else
+        reply.pushKV("result", result);
+    reply.pushKV("error", error);
+    reply.pushKV("id", id);
+    return reply;
 }
 
-std::string CMessageHeader::GetCommand() const
+std::string JSONRPCReply(const UniValue& result, const UniValue& error, const UniValue& id)
 {
-    return std::string(pchCommand, pchCommand + strnlen(pchCommand, COMMAND_SIZE));
+    UniValue reply = JSONRPCReplyObj(result, error, id);
+    return reply.write() + "\n";
 }
 
-bool CMessageHeader::IsValid(const MessageStartChars& pchMessageStartIn) const
+UniValue JSONRPCError(int code, const std::string& message)
 {
-    // Check start string
-    if (memcmp(pchMessageStart, pchMessageStartIn, MESSAGE_START_SIZE) != 0)
-        return false;
+    UniValue error(UniValue::VOBJ);
+    error.pushKV("code", code);
+    error.pushKV("message", message);
+    return error;
+}
 
-    // Check the command string for errors
-    for (const char* p1 = pchCommand; p1 < pchCommand + COMMAND_SIZE; p1++)
-    {
-        if (*p1 == 0)
-        {
-            // Must be all zeros after the first zero
-            for (; p1 < pchCommand + COMMAND_SIZE; p1++)
-                if (*p1 != 0)
-                    return false;
-        }
-        else if (*p1 < ' ' || *p1 > 0x7E)
-            return false;
+/** Username used when cookie authentication is in use (arbitrary, only for
+ * recognizability in debugging/logging purposes)
+ */
+static const std::string COOKIEAUTH_USER = "__cookie__";
+/** Default name for auth cookie file */
+static const std::string COOKIEAUTH_FILE = ".cookie";
+
+/** Get name of RPC authentication cookie file */
+static fs::path GetAuthCookieFile(bool temp=false)
+{
+    std::string arg = gArgs.GetArg("-rpccookiefile", COOKIEAUTH_FILE);
+    if (temp) {
+        arg += ".tmp";
     }
+    return AbsPathForConfigVal(fs::path(arg));
+}
 
-    // Message size
-    if (nMessageSize > MAX_SIZE)
-    {
-        LogPrintf("CMessageHeader::IsValid(): (%s, %u bytes) nMessageSize > MAX_SIZE\n", GetCommand(), nMessageSize);
+bool GenerateAuthCookie(std::string *cookie_out)
+{
+    const size_t COOKIE_SIZE = 32;
+    unsigned char rand_pwd[COOKIE_SIZE];
+    GetRandBytes(rand_pwd, COOKIE_SIZE);
+    std::string cookie = COOKIEAUTH_USER + ":" + HexStr(rand_pwd, rand_pwd+COOKIE_SIZE);
+
+    /** the umask determines what permissions are used to create this file -
+     * these are set to 077 in init.cpp unless overridden with -sysperms.
+     */
+    std::ofstream file;
+    fs::path filepath_tmp = GetAuthCookieFile(true);
+    file.open(filepath_tmp.string().c_str());
+    if (!file.is_open()) {
+        LogPrintf("Unable to open cookie authentication file %s for writing\n", filepath_tmp.string());
         return false;
     }
+    file << cookie;
+    file.close();
 
+    fs::path filepath = GetAuthCookieFile(false);
+    if (!RenameOver(filepath_tmp, filepath)) {
+        LogPrintf("Unable to rename cookie authentication file %s to %s\n", filepath_tmp.string(), filepath.string());
+        return false;
+    }
+    LogPrintf("Generated RPC authentication cookie %s\n", filepath.string());
+
+    if (cookie_out)
+        *cookie_out = cookie;
     return true;
 }
 
-ServiceFlags GetDesirableServiceFlags(ServiceFlags services) {
-    if ((services & NODE_NETWORK_LIMITED) && g_initial_block_download_completed) {
-        return ServiceFlags(NODE_NETWORK_LIMITED | NODE_WITNESS);
-    }
-    return ServiceFlags(NODE_NETWORK | NODE_WITNESS);
-}
-
-void SetServiceFlagsIBDCache(bool state) {
-    g_initial_block_download_completed = state;
-}
-
-
-CAddress::CAddress() : CService()
+bool GetAuthCookie(std::string *cookie_out)
 {
-    Init();
+    std::ifstream file;
+    std::string cookie;
+    fs::path filepath = GetAuthCookieFile();
+    file.open(filepath.string().c_str());
+    if (!file.is_open())
+        return false;
+    std::getline(file, cookie);
+    file.close();
+
+    if (cookie_out)
+        *cookie_out = cookie;
+    return true;
 }
 
-CAddress::CAddress(CService ipIn, ServiceFlags nServicesIn) : CService(ipIn)
-{
-    Init();
-    nServices = nServicesIn;
-}
-
-void CAddress::Init()
-{
-    nServices = NODE_NONE;
-    nTime = 100000000;
-}
-
-CInv::CInv()
-{
-    type = 0;
-    hash.SetNull();
-}
-
-CInv::CInv(int typeIn, const uint256& hashIn) : type(typeIn), hash(hashIn) {}
-
-bool operator<(const CInv& a, const CInv& b)
-{
-    return (a.type < b.type || (a.type == b.type && a.hash < b.hash));
-}
-
-std::string CInv::GetCommand() const
-{
-    std::string cmd;
-    if (type & MSG_WITNESS_FLAG)
-        cmd.append("witness-");
-    int masked = type & MSG_TYPE_MASK;
-    switch (masked)
-    {
-    case MSG_TX:             return cmd.append(NetMsgType::TX);
-    case MSG_BLOCK:          return cmd.append(NetMsgType::BLOCK);
-    case MSG_FILTERED_BLOCK: return cmd.append(NetMsgType::MERKLEBLOCK);
-    case MSG_CMPCT_BLOCK:    return cmd.append(NetMsgType::CMPCTBLOCK);
-    default:
-        throw std::out_of_range(strprintf("CInv::GetCommand(): type=%d unknown type", type));
-    }
-}
-
-std::string CInv::ToString() const
+void DeleteAuthCookie()
 {
     try {
-        return strprintf("%s %s", GetCommand(), hash.ToString());
-    } catch(const std::out_of_range &) {
-        return strprintf("0x%08x %s", type, hash.ToString());
+        fs::remove(GetAuthCookieFile());
+    } catch (const fs::filesystem_error& e) {
+        LogPrintf("%s: Unable to remove random auth cookie file: %s\n", __func__, e.what());
     }
 }
 
-const std::vector<std::string> &getAllNetMessageTypes()
+std::vector<UniValue> JSONRPCProcessBatchReply(const UniValue &in, size_t num)
 {
-    return allNetMessageTypesVec;
+    if (!in.isArray()) {
+        throw std::runtime_error("Batch must be an array");
+    }
+    std::vector<UniValue> batch(num);
+    for (size_t i=0; i<in.size(); ++i) {
+        const UniValue &rec = in[i];
+        if (!rec.isObject()) {
+            throw std::runtime_error("Batch member must be object");
+        }
+        size_t id = rec["id"].get_int();
+        if (id >= num) {
+            throw std::runtime_error("Batch member id larger than size");
+        }
+        batch[id] = rec;
+    }
+    return batch;
 }
