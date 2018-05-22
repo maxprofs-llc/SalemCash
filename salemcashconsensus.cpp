@@ -86,17 +86,17 @@ static int verify_script(const unsigned char *scriptPubKey, unsigned int scriptP
         TxInputStream stream(SER_NETWORK, PROTOCOL_VERSION, txTo, txToLen);
         CTransaction tx(deserialize, stream);
         if (nIn >= tx.vin.size())
-            return set_error(err, salemcashconsensus_ERR_TX_INDEX);
+            return set_error(err, SALEMCASHCONSENSUS_ERR_TX_INDEX);
         if (GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION) != txToLen)
-            return set_error(err, salemcashconsensus_ERR_TX_SIZE_MISMATCH);
+            return set_error(err, SALEMCASHCONSENSUS_ERR_TX_SIZE_MISMATCH);
 
         // Regardless of the verification result, the tx did not error.
-        set_error(err, salemcashconsensus_ERR_OK);
+        set_error(err, SALEMCASHCONSENSUS_ERR_OK);
 
         PrecomputedTransactionData txdata(tx);
         return VerifyScript(tx.vin[nIn].scriptSig, CScript(scriptPubKey, scriptPubKey + scriptPubKeyLen), &tx.vin[nIn].scriptWitness, flags, TransactionSignatureChecker(&tx, nIn, amount, txdata), nullptr);
     } catch (const std::exception&) {
-        return set_error(err, salemcashconsensus_ERR_TX_DESERIALIZE); // Error deserializing
+        return set_error(err, SALEMCASHCONSENSUS_ERR_TX_DESERIALIZE); // Error deserializing
     }
 }
 
@@ -113,8 +113,8 @@ int salemcashconsensus_verify_script(const unsigned char *scriptPubKey, unsigned
                                    const unsigned char *txTo        , unsigned int txToLen,
                                    unsigned int nIn, unsigned int flags, salemcashconsensus_error* err)
 {
-    if (flags & salemcashconsensus_SCRIPT_FLAGS_VERIFY_WITNESS) {
-        return set_error(err, salemcashconsensus_ERR_AMOUNT_REQUIRED);
+    if (flags & SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_WITNESS) {
+        return set_error(err, SALEMCASHCONSENSUS_ERR_AMOUNT_REQUIRED);
     }
 
     CAmount am(0);

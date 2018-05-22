@@ -36,27 +36,27 @@ extern "C" {
 
 typedef enum salemcashconsensus_error_t
 {
-    salemcashconsensus_ERR_OK = 0,
-    salemcashconsensus_ERR_TX_INDEX,
-    salemcashconsensus_ERR_TX_SIZE_MISMATCH,
-    salemcashconsensus_ERR_TX_DESERIALIZE,
-    salemcashconsensus_ERR_AMOUNT_REQUIRED,
-    salemcashconsensus_ERR_INVALID_FLAGS,
+    SALEMCASHCONSENSUS_ERR_OK = 0,
+    SALEMCASHCONSENSUS_ERR_TX_INDEX,
+    SALEMCASHCONSENSUS_ERR_TX_SIZE_MISMATCH,
+    SALEMCASHCONSENSUS_ERR_TX_DESERIALIZE,
+    SALEMCASHCONSENSUS_ERR_AMOUNT_REQUIRED,
+    SALEMCASHCONSENSUS_ERR_INVALID_FLAGS,
 } salemcashconsensus_error;
 
 /** Script verification flags */
 enum
 {
-    salemcashconsensus_SCRIPT_FLAGS_VERIFY_NONE                = 0,
-    salemcashconsensus_SCRIPT_FLAGS_VERIFY_P2SH                = (1U << 0), // evaluate P2SH (BIP16) subscripts
-    salemcashconsensus_SCRIPT_FLAGS_VERIFY_DERSIG              = (1U << 2), // enforce strict DER (BIP66) compliance
-    salemcashconsensus_SCRIPT_FLAGS_VERIFY_NULLDUMMY           = (1U << 4), // enforce NULLDUMMY (BIP147)
-    salemcashconsensus_SCRIPT_FLAGS_VERIFY_CHECKLOCKTIMEVERIFY = (1U << 9), // enable CHECKLOCKTIMEVERIFY (BIP65)
-    salemcashconsensus_SCRIPT_FLAGS_VERIFY_CHECKSEQUENCEVERIFY = (1U << 10), // enable CHECKSEQUENCEVERIFY (BIP112)
-    salemcashconsensus_SCRIPT_FLAGS_VERIFY_WITNESS             = (1U << 11), // enable WITNESS (BIP141)
-    salemcashconsensus_SCRIPT_FLAGS_VERIFY_ALL                 = salemcashconsensus_SCRIPT_FLAGS_VERIFY_P2SH | salemcashconsensus_SCRIPT_FLAGS_VERIFY_DERSIG |
-                                                               salemcashconsensus_SCRIPT_FLAGS_VERIFY_NULLDUMMY | salemcashconsensus_SCRIPT_FLAGS_VERIFY_CHECKLOCKTIMEVERIFY |
-                                                               salemcashconsensus_SCRIPT_FLAGS_VERIFY_CHECKSEQUENCEVERIFY | salemcashconsensus_SCRIPT_FLAGS_VERIFY_WITNESS
+    SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_NONE                = 0,
+    SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_P2SH                = (1U << 0), // evaluate P2SH (BIP16) subscripts
+    SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_DERSIG              = (1U << 2), // enforce strict DER (BIP66) compliance
+    SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_NULLDUMMY           = (1U << 4), // enforce NULLDUMMY (BIP147)
+    SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_CHECKLOCKTIMEVERIFY = (1U << 9), // enable CHECKLOCKTIMEVERIFY (BIP65)
+    SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_CHECKSEQUENCEVERIFY = (1U << 10), // enable CHECKSEQUENCEVERIFY (BIP112)
+    SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_WITNESS             = (1U << 11), // enable WITNESS (BIP141)
+    SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_ALL                 = SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_P2SH | SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_DERSIG |
+                                                               SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_NULLDUMMY | SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_CHECKLOCKTIMEVERIFY |
+                                                               SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_CHECKSEQUENCEVERIFY | SALEMCASHCONSENSUS_SCRIPT_FLAGS_VERIFY_WITNESS
 };
 
 /// Returns 1 if the input nIn of the serialized transaction pointed to by

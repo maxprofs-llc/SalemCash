@@ -341,7 +341,6 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                 }
                 break;
 
-
                 //
                 // Control
                 //
@@ -489,7 +488,6 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                     return set_error(serror, SCRIPT_ERR_OP_RETURN);
                 }
                 break;
-
 
                 //
                 // Stack ops
@@ -689,7 +687,6 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                 }
                 break;
 
-
                 case OP_SIZE:
                 {
                     // (in -- in size)
@@ -699,7 +696,6 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                     stack.push_back(bn.getvch());
                 }
                 break;
-
 
                 //
                 // Bitwise logic
@@ -731,7 +727,6 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                     }
                 }
                 break;
-
 
                 //
                 // Numeric
@@ -834,7 +829,6 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                     stack.push_back(fValue ? vchTrue : vchFalse);
                 }
                 break;
-
 
                 //
                 // Crypto
