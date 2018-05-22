@@ -53,7 +53,7 @@ struct CashEntry {
 
 }
 
-CCashViewDB::CCoinsViewDB(size_t nCacheSize, bool fMemory, bool fWipe) : db(GetDataDir() / "chainstate", nCacheSize, fMemory, fWipe, true) 
+CCashViewDB::CCashViewDB(size_t nCacheSize, bool fMemory, bool fWipe) : db(GetDataDir() / "chainstate", nCacheSize, fMemory, fWipe, true) 
 {
 }
 
@@ -116,9 +116,9 @@ bool CCashViewDB::BatchWrite(CCashMap &mapCash, const uint256 &hashBlock) {
         }
         count++;
         CCashMap::iterator itOld = it++;
-        mapCoins.erase(itOld);
+        mapCash.erase(itOld);
         if (batch.SizeEstimate() > batch_size) {
-            LogPrint(BCLog::COINDB, "Writing partial batch of %.2f MiB\n", batch.SizeEstimate() * (1.0 / 1048576.0));
+            LogPrint(BCLog::CASHDB, "Writing partial batch of %.2f MiB\n", batch.SizeEstimate() * (1.0 / 1048576.0));
             db.WriteBatch(batch);
             batch.Clear();
             if (crash_simulate) {
@@ -402,7 +402,7 @@ bool CCashViewDB::Upgrade() {
                     Cash newcash(std::move(old_cash.vout[i]), old_cash.nHeight, old_cash.fCashBase);
                     outpoint.n = i;
                     CashEntry entry(&outpoint);
-                    batch.Write(entry, newcoin);
+                    batch.Write(entry, newcash);
                 }
             }
             batch.Erase(key);

@@ -34,7 +34,7 @@ static const int64_t nMaxBlockDBCache = 2;
 // Unlike for the UTXO database, for the txindex scenario the leveldb cache make
 // a meaningful difference: https://github.com/PastorOmbura/SalemCash/pull/8273#issuecomment-229601991
 static const int64_t nMaxBlockDBAndTxIndexCache = 1024;
-//! Max memory allocated to coin DB specific cache (MiB)
+//! Max memory allocated to cash DB specific cache (MiB)
 static const int64_t nMaxCashDBCache = 8;
 
 struct CDiskTxPos : public CDiskBlockPos

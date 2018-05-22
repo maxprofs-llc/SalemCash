@@ -29,7 +29,6 @@ std::string FormatMoney(const CAmount& n)
     return str;
 }
 
-
 bool ParseMoney(const std::string& str, CAmount& nRet)
 {
     return ParseMoney(str.c_str(), nRet);
@@ -66,10 +65,10 @@ bool ParseMoney(const char* pszIn, CAmount& nRet)
             return false;
     if (strWhole.size() > 10) // guard against 63 bit overflow
         return false;
-    if (nUnits < 0 || nUnits > COIN)
+    if (nUnits < 0 || nUnits > CASH)
         return false;
     int64_t nWhole = atoi64(strWhole);
-    CAmount nValue = nWhole*COIN + nUnits;
+    CAmount nValue = nWhole*CASH + nUnits;
 
     nRet = nValue;
     return true;

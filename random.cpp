@@ -1,5 +1,4 @@
-// Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2017 The Bitcoin Core developers
+// Copyright (c) 2018 The Salemcash developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -71,7 +70,6 @@ static inline int64_t GetPerformanceCounter()
     return std::chrono::high_resolution_clock::now().time_since_epoch().count();
 #endif
 }
-
 
 #if defined(__x86_64__) || defined(__amd64__) || defined(__i386__)
 static std::atomic<bool> hwrand_initialized{false};
@@ -293,12 +291,12 @@ void RandAddSeedSleep()
     memory_cleanse(&nPerfCounter2, sizeof(nPerfCounter2));
 }
 
-
 static std::mutex cs_rng_state;
 static unsigned char rng_state[32] = {0};
 static uint64_t rng_counter = 0;
 
-static void AddDataToRng(void* data, size_t len) {
+static void AddDataToRng(void* data, size_t len) 
+{
     CSHA512 hasher;
     hasher.Write((const unsigned char*)&len, sizeof(len));
     hasher.Write((const unsigned char*)data, len);

@@ -45,7 +45,7 @@ public:
         unsigned int nCode = 0;
         ::Unserialize(s, VARINT(nCode));
         txout->nHeight = nCode / 2;
-        txout->fCoinBase = nCode & 1;
+        txout->fCashBase = nCode & 1;
         if (txout->nHeight > 0) {
             // Old versions stored the version number for the last spend of
             // a transaction's outputs. Non-final spends were indicated with
@@ -67,7 +67,7 @@ class CTxUndo
 {
 public:
     // undo information for all txins
-    std::vector<Coin> vprevout;
+    std::vector<Cash> vprevout;
 
     template <typename Stream>
     void Serialize(Stream& s) const {
@@ -98,7 +98,7 @@ public:
 class CBlockUndo
 {
 public:
-    std::vector<CTxUndo> vtxundo; // for all but the coinbase
+    std::vector<CTxUndo> vtxundo; // for all but the cashbase
 
     ADD_SERIALIZE_METHODS;
 

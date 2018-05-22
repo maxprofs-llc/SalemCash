@@ -10,7 +10,6 @@
  *   for (auto x : reverse_iterate(v))
  *       std::cout << x << " ";
  */
-
 template <typename T>
 class reverse_range
 {

@@ -335,7 +335,6 @@ bool ParseUInt64(const std::string& str, uint64_t *out)
         n <= std::numeric_limits<uint64_t>::max();
 }
 
-
 bool ParseDouble(const std::string& str, double *out)
 {
     if (!ParsePrechecks(str))

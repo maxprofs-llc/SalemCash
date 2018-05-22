@@ -20,7 +20,6 @@ CScheduler::~CScheduler()
     assert(nThreadsServicingQueue == 0);
 }
 
-
 #if BOOST_VERSION < 105000
 static boost::system_time toPosixTime(const boost::chrono::system_clock::time_point& t)
 {
@@ -145,8 +144,8 @@ bool CScheduler::AreThreadsServicingQueue() const {
     return nThreadsServicingQueue;
 }
 
-
-void SingleThreadedSchedulerClient::MaybeScheduleProcessQueue() {
+void SingleThreadedSchedulerClient::MaybeScheduleProcessQueue() 
+{
     {
         LOCK(m_cs_callbacks_pending);
         // Try to avoid scheduling too many copies here, but if we

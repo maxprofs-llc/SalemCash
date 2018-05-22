@@ -38,7 +38,6 @@
 // * Augment rather than replace the standard stream formatting mechanism
 // * C++98 support, with optional C++11 niceties
 //
-//
 // Main interface example usage
 // ----------------------------
 //
@@ -100,7 +99,6 @@
 //
 //   tfm::vformat(std::cout, "%s, %s %d, %.2d:%.2d\n", formatList);
 //
-//
 // Additional API information
 // --------------------------
 //
@@ -110,7 +108,6 @@
 //
 // User defined types: Uses operator<< for user defined types by default.
 // Overload formatValue() for more control.
-
 
 #ifndef TINYFORMAT_H_INCLUDED
 #define TINYFORMAT_H_INCLUDED
@@ -128,7 +125,6 @@ namespace tfm = tinyformat;
 // Define for C++11 variadic templates which make the code shorter & more
 // general.  If you don't define this, C++11 support is autodetected below.
 #define TINYFORMAT_USE_VARIADIC_TEMPLATES
-
 
 //------------------------------------------------------------------------------
 // Implementation details.
@@ -204,14 +200,12 @@ struct is_convertible
 #       endif
 };
 
-
 // Detect when a type is not a wchar_t string
 template<typename T> struct is_wchar { typedef int tinyformat_wchar_is_not_supported; };
 template<> struct is_wchar<wchar_t*> {};
 template<> struct is_wchar<const wchar_t*> {};
 template<int n> struct is_wchar<const wchar_t[n]> {};
 template<int n> struct is_wchar<wchar_t[n]> {};
-
 
 // Format the value by casting to type fmtT.  This default implementation
 // should never be called.
@@ -294,11 +288,9 @@ TINYFORMAT_DEFINE_FORMAT_TRUNCATED_CSTR(char)
 
 } // namespace detail
 
-
 //------------------------------------------------------------------------------
 // Variable formatting functions.  May be overridden for user-defined types if
 // desired.
-
 
 /// Format a value into a stream, delegating to operator<< by default.
 ///
@@ -345,7 +337,6 @@ inline void formatValue(std::ostream& out, const char* /*fmtBegin*/,
         out << value;
 }
 
-
 // Overloaded version for char types to support printing as an integer
 #define TINYFORMAT_DEFINE_FORMATVALUE_CHAR(charType)                  \
 inline void formatValue(std::ostream& out, const char* /*fmtBegin*/,  \
@@ -364,7 +355,6 @@ TINYFORMAT_DEFINE_FORMATVALUE_CHAR(char)
 TINYFORMAT_DEFINE_FORMATVALUE_CHAR(signed char)
 TINYFORMAT_DEFINE_FORMATVALUE_CHAR(unsigned char)
 #undef TINYFORMAT_DEFINE_FORMATVALUE_CHAR
-
 
 //------------------------------------------------------------------------------
 // Tools for emulating variadic templates in C++98.  The basic idea here is
@@ -484,8 +474,6 @@ cog.outl('#define TINYFORMAT_FOREACH_ARGNUM(m) \\\n    ' +
     m(1) m(2) m(3) m(4) m(5) m(6) m(7) m(8) m(9) m(10) m(11) m(12) m(13) m(14) m(15) m(16)
 //[[[end]]]
 
-
-
 namespace detail {
 
 // Type-opaque holder for an argument to format(), with associated actions on
@@ -543,7 +531,6 @@ class FormatArg
         int (*m_toIntImpl)(const void* value);
 };
 
-
 // Parse and return an integer from the string c, as atoi()
 // On return, c is set to one past the end of the integer.
 inline int parseIntAndAdvance(const char*& c)
@@ -582,7 +569,6 @@ inline const char* printFormatStringLiteral(std::ostream& out, const char* fmt)
         }
     }
 }
-
 
 // Parse a format string and set the stream state accordingly.
 //
@@ -783,7 +769,6 @@ inline const char* streamStateFromFormat(std::ostream& out, bool& spacePadPositi
     return c+1;
 }
 
-
 //------------------------------------------------------------------------------
 inline void formatImpl(std::ostream& out, const char* fmt,
                        const detail::FormatArg* formatters,
@@ -869,7 +854,6 @@ class FormatList
 /// Reference to type-opaque format list for passing to vformat()
 typedef const FormatList& FormatListRef;
 
-
 namespace detail {
 
 // Format list subclass with fixed storage to avoid dynamic allocation
@@ -914,7 +898,6 @@ template<> class FormatListN<0> : public FormatList
 };
 
 } // namespace detail
-
 
 //------------------------------------------------------------------------------
 // Primary API functions
@@ -1052,7 +1035,7 @@ TINYFORMAT_FOREACH_ARGNUM(TINYFORMAT_MAKE_FORMAT_FUNCS)
 
 #endif
 
-// Added for Bitcoin Core
+// Added for Salemcash Core
 template<typename... Args>
 std::string format(const std::string &fmt, const Args&... args)
 {

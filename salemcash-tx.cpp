@@ -100,7 +100,6 @@ static int AppInitRawTx(int argc, char* argv[])
         strUsage += HelpMessageOpt("load=NAME:FILENAME", _("Load JSON file FILENAME into register NAME"));
         strUsage += HelpMessageOpt("set=NAME:JSON-STRING", _("Set register NAME to given JSON-STRING"));
         fprintf(stdout, "%s", strUsage.c_str());
-
         if (argc < 2) {
             fprintf(stderr, "Error: too few parameters\n");
             return EXIT_FAILURE;
@@ -376,7 +375,6 @@ static void MutateTxAddOutMultiSig(CMutableTransaction& tx, const std::string& s
     }
 
     CScript scriptPubKey = GetScriptForMultisig(required, pubkeys);
-
     if (bSegWit) {
         for (CPubKey& pubkey : pubkeys) {
             if (!pubkey.IsCompressed()) {
@@ -406,10 +404,9 @@ static void MutateTxAddOutData(CMutableTransaction& tx, const std::string& strIn
 
     // separate [VALUE:]DATA in string
     size_t pos = strInput.find(':');
-
     if (pos==0)
         throw std::runtime_error("TX output value not specified");
-
+	
     if (pos != std::string::npos) {
         // Extract and validate VALUE
         value = ExtractAndValidateValue(strInput.substr(0, pos));
@@ -417,7 +414,6 @@ static void MutateTxAddOutData(CMutableTransaction& tx, const std::string& strIn
 
     // extract and validate DATA
     std::string strData = strInput.substr(pos + 1, std::string::npos);
-
     if (!IsHex(strData))
         throw std::runtime_error("invalid TX output data");
 
@@ -450,12 +446,10 @@ static void MutateTxAddOutScript(CMutableTransaction& tx, const std::string& str
         bSegWit = (flags.find('W') != std::string::npos);
         bScriptHash = (flags.find('S') != std::string::npos);
     }
-
     if (scriptPubKey.size() > MAX_SCRIPT_SIZE) {
         throw std::runtime_error(strprintf(
                     "script exceeds size limit: %d > %d", scriptPubKey.size(), MAX_SCRIPT_SIZE));
     }
-
     if (bSegWit) {
         scriptPubKey = GetScriptForWitness(scriptPubKey);
     }
@@ -466,7 +460,6 @@ static void MutateTxAddOutScript(CMutableTransaction& tx, const std::string& str
         }
         scriptPubKey = GetScriptForDestination(CScriptID(scriptPubKey));
     }
-
     // construct TxOut, append to transaction output list
     CTxOut txout(value, scriptPubKey);
     tx.vout.push_back(txout);
@@ -480,7 +473,6 @@ static void MutateTxDelInput(CMutableTransaction& tx, const std::string& strInId
         std::string strErr = "Invalid TX input index '" + strInIdx + "'";
         throw std::runtime_error(strErr.c_str());
     }
-
     // delete input from transaction
     tx.vin.erase(tx.vin.begin() + inIdx);
 }
@@ -493,7 +485,6 @@ static void MutateTxDelOutput(CMutableTransaction& tx, const std::string& strOut
         std::string strErr = "Invalid TX output index '" + strOutIdx + "'";
         throw std::runtime_error(strErr.c_str());
     }
-
     // delete output from transaction
     tx.vout.erase(tx.vout.begin() + outIdx);
 }
@@ -540,7 +531,6 @@ static CAmount AmountFromValue(const UniValue& value)
 static void MutateTxSign(CMutableTransaction& tx, const std::string& flagStr)
 {
     int nHashType = SIGHASH_ALL;
-
     if (flagStr.size() > 0)
         if (!findSighashFlags(nHashType, flagStr))
             throw std::runtime_error("unknown sighash flag/sign option");
@@ -553,7 +543,6 @@ static void MutateTxSign(CMutableTransaction& tx, const std::string& flagStr)
     CMutableTransaction mergedTx(txVariants[0]);
     CCashView viewDummy;
     CCashViewCache view(&viewDummy);
-
     if (!registers.count("privatekeys"))
         throw std::runtime_error("privatekeys register variable must be set.");
     CBasicKeyStore tempKeystore;
@@ -635,7 +624,7 @@ static void MutateTxSign(CMutableTransaction& tx, const std::string& flagStr)
     for (unsigned int i = 0; i < mergedTx.vin.size(); i++) {
         CTxIn& txin = mergedTx.vin[i];
         const Cash& cash = view.AccessCash(txin.prevout);
-        if (coin.IsSpent()) {
+        if (cash.IsSpent()) {
             continue;
         }
         const CScript& prevPubKey = cash.out.scriptPubKey;
@@ -680,12 +669,10 @@ static void MutateTx(CMutableTransaction& tx, const std::string& command,
     else if (command == "replaceable") {
         MutateTxRBFOptIn(tx, commandVal);
     }
-
     else if (command == "delin")
         MutateTxDelInput(tx, commandVal);
     else if (command == "in")
         MutateTxAddInput(tx, commandVal);
-
     else if (command == "delout")
         MutateTxDelOutput(tx, commandVal);
     else if (command == "outaddr")
@@ -700,12 +687,10 @@ static void MutateTx(CMutableTransaction& tx, const std::string& command,
         MutateTxAddOutScript(tx, commandVal);
     else if (command == "outdata")
         MutateTxAddOutData(tx, commandVal);
-
     else if (command == "sign") {
         ecc.reset(new Secp256k1Init());
         MutateTxSign(tx, commandVal);
     }
-
     else if (command == "load")
         RegisterLoad(commandVal);
 
@@ -789,7 +774,7 @@ static int CommandLineRawTx(int argc, char* argv[])
             if (argc < 2)
                 throw std::runtime_error("too few parameters");
 
-            // param: hex-encoded bitcoin transaction
+            // param: hex-encoded Salemcash transaction
             std::string strHexTx(argv[1]);
             if (strHexTx == "-")                 // "-" implies standard input
                 strHexTx = readStdin();

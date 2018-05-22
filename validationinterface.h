@@ -25,11 +25,11 @@ enum class MemPoolRemovalReason;
 
 // These functions dispatch to one or all registered wallets
 
-/** Register a wallet to receive updates from core */
+/** Register a wallet to receive updates from the software developers */
 void RegisterValidationInterface(CValidationInterface* pwalletIn);
-/** Unregister a wallet from core */
+/** Unregister a wallet from the software developers */
 void UnregisterValidationInterface(CValidationInterface* pwalletIn);
-/** Unregister all wallets from core */
+/** Unregister all wallets from the software developers */
 void UnregisterAllValidationInterfaces();
 /**
  * Pushes a function to callback onto the notification queue, guaranteeing any
@@ -75,7 +75,7 @@ protected:
      * Notifies listeners of a transaction leaving mempool.
      *
      * This only fires for transactions which leave mempool because of expiry,
-     * size limiting, reorg (changes in lock times/coinbase maturity), or
+     * size limiting, reorg (changes in lock times/cashbase maturity), or
      * replacement. This does not include any transactions which are included
      * in BlockConnectedDisconnected either in block->vtx or in txnConflicted.
      *

@@ -1,64 +1,152 @@
-// Copyright (c) 2011 The LevelDB Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file. See the AUTHORS file for names of contributors.
+// Copyright (c) 2018 The SalemCash developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef STORAGE_LEVELDB_UTIL_RANDOM_H_
-#define STORAGE_LEVELDB_UTIL_RANDOM_H_
+#ifndef SALEMCASH_RANDOM_H
+#define SALEMCASH_RANDOM_H
+
+#include <crypto/chacha20.h>
+#include <crypto/common.h>
+#include <uint256.h>
 
 #include <stdint.h>
+#include <limits>
 
-namespace leveldb {
+/* Seed OpenSSL PRNG with additional entropy data */
+void RandAddSeed();
 
-// A very simple random number generator.  Not especially good at
-// generating truly random bits, but good enough for our needs in this
-// package.
-class Random {
- private:
-  uint32_t seed_;
- public:
-  explicit Random(uint32_t s) : seed_(s & 0x7fffffffu) {
-    // Avoid bad seeds.
-    if (seed_ == 0 || seed_ == 2147483647L) {
-      seed_ = 1;
+/**
+ * Functions to gather random data via the OpenSSL PRNG
+ */
+void GetRandBytes(unsigned char* buf, int num);
+uint64_t GetRand(uint64_t nMax);
+int GetRandInt(int nMax);
+uint256 GetRandHash();
+
+/**
+ * Add a little bit of randomness to the output of GetStrongRangBytes.
+ * This sleeps for a millisecond, so should only be called when there is
+ * no other work to be done.
+ */
+void RandAddSeedSleep();
+
+/**
+ * Function to gather random data from multiple sources, failing whenever any
+ * of those sources fail to provide a result.
+ */
+void GetStrongRandBytes(unsigned char* buf, int num);
+
+/**
+ * Fast randomness source. This is seeded once with secure random data, but
+ * is completely deterministic and insecure after that.
+ * This class is not thread-safe.
+ */
+class FastRandomContext {
+private:
+    bool requires_seed;
+    ChaCha20 rng;
+
+    unsigned char bytebuf[64];
+    int bytebuf_size;
+
+    uint64_t bitbuf;
+    int bitbuf_size;
+
+    void RandomSeed();
+
+    void FillByteBuffer()
+    {
+        if (requires_seed) {
+            RandomSeed();
+        }
+        rng.Output(bytebuf, sizeof(bytebuf));
+        bytebuf_size = sizeof(bytebuf);
     }
-  }
-  uint32_t Next() {
-    static const uint32_t M = 2147483647L;   // 2^31-1
-    static const uint64_t A = 16807;  // bits 14, 8, 7, 5, 2, 1, 0
-    // We are computing
-    //       seed_ = (seed_ * A) % M,    where M = 2^31-1
-    //
-    // seed_ must not be zero or M, or else all subsequent computed values
-    // will be zero or M respectively.  For all other values, seed_ will end
-    // up cycling through every number in [1,M-1]
-    uint64_t product = seed_ * A;
 
-    // Compute (product % M) using the fact that ((x << 31) % M) == x.
-    seed_ = static_cast<uint32_t>((product >> 31) + (product & M));
-    // The first reduction may overflow by 1 bit, so we may need to
-    // repeat.  mod == M is not possible; using > allows the faster
-    // sign-bit-based test.
-    if (seed_ > M) {
-      seed_ -= M;
+    void FillBitBuffer()
+    {
+        bitbuf = rand64();
+        bitbuf_size = 64;
     }
-    return seed_;
-  }
-  // Returns a uniformly distributed value in the range [0..n-1]
-  // REQUIRES: n > 0
-  uint32_t Uniform(int n) { return Next() % n; }
 
-  // Randomly returns true ~"1/n" of the time, and false otherwise.
-  // REQUIRES: n > 0
-  bool OneIn(int n) { return (Next() % n) == 0; }
+public:
+    explicit FastRandomContext(bool fDeterministic = false);
 
-  // Skewed: pick "base" uniformly from range [0,max_log] and then
-  // return "base" random bits.  The effect is to pick a number in the
-  // range [0,2^max_log-1] with exponential bias towards smaller numbers.
-  uint32_t Skewed(int max_log) {
-    return Uniform(1 << Uniform(max_log + 1));
-  }
+    /** Initialize with explicit seed (only for testing) */
+    explicit FastRandomContext(const uint256& seed);
+
+    /** Generate a random 64-bit integer. */
+    uint64_t rand64()
+    {
+        if (bytebuf_size < 8) FillByteBuffer();
+        uint64_t ret = ReadLE64(bytebuf + 64 - bytebuf_size);
+        bytebuf_size -= 8;
+        return ret;
+    }
+
+    /** Generate a random (bits)-bit integer. */
+    uint64_t randbits(int bits) {
+        if (bits == 0) {
+            return 0;
+        } else if (bits > 32) {
+            return rand64() >> (64 - bits);
+        } else {
+            if (bitbuf_size < bits) FillBitBuffer();
+            uint64_t ret = bitbuf & (~(uint64_t)0 >> (64 - bits));
+            bitbuf >>= bits;
+            bitbuf_size -= bits;
+            return ret;
+        }
+    }
+
+    /** Generate a random integer in the range [0..range). */
+    uint64_t randrange(uint64_t range)
+    {
+        --range;
+        int bits = CountBits(range);
+        while (true) {
+            uint64_t ret = randbits(bits);
+            if (ret <= range) return ret;
+        }
+    }
+
+    /** Generate random bytes. */
+    std::vector<unsigned char> randbytes(size_t len);
+
+    /** Generate a random 32-bit integer. */
+    uint32_t rand32() { return randbits(32); }
+
+    /** generate a random uint256. */
+    uint256 rand256();
+
+    /** Generate a random boolean. */
+    bool randbool() { return randbits(1); }
+
+    // Compatibility with the C++11 UniformRandomBitGenerator concept
+    typedef uint64_t result_type;
+    static constexpr uint64_t min() { return 0; }
+    static constexpr uint64_t max() { return std::numeric_limits<uint64_t>::max(); }
+    inline uint64_t operator()() { return rand64(); }
 };
 
-}  // namespace leveldb
+/* Number of random bytes returned by GetOSRand.
+ * When changing this constant make sure to change all call sites, and make
+ * sure that the underlying OS APIs for all platforms support the number.
+ * (many cap out at 256 bytes).
+ */
+static const int NUM_OS_RANDOM_BYTES = 32;
 
-#endif  // STORAGE_LEVELDB_UTIL_RANDOM_H_
+/** Get 32 bytes of system entropy. Do not use this in application code: use
+ * GetStrongRandBytes instead.
+ */
+void GetOSRand(unsigned char *ent32);
+
+/** Check that OS randomness is available and returning the requested number
+ * of bytes.
+ */
+bool Random_SanityCheck();
+
+/** Initialize the RNG. */
+void RandomInit();
+
+#endif // SALEMCASH_RANDOM_H

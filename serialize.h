@@ -130,17 +130,14 @@ inline float ser_uint32_to_float(uint32_t y)
     return tmp.x;
 }
 
-
 /////////////////////////////////////////////////////////////////
 //
 // Templates for serializing to anything that looks like a stream,
 // i.e. anything that supports .read(char*, size_t) and .write(char*, size_t)
 //
-
 class CSizeComputer;
 
-enum
-{
+enum {
     // primary actions
     SER_NETWORK         = (1 << 0),
     SER_DISK            = (1 << 1),
@@ -191,11 +188,6 @@ template<typename Stream> inline void Unserialize(Stream& s, double& a  ) { a = 
 
 template<typename Stream> inline void Serialize(Stream& s, bool a)    { char f=a; ser_writedata8(s, f); }
 template<typename Stream> inline void Unserialize(Stream& s, bool& a) { char f=ser_readdata8(s); a=f; }
-
-
-
-
-
 
 /**
  * Compact Size
@@ -549,8 +541,6 @@ template<typename Stream, typename T> void Unserialize(Stream& os, std::shared_p
 template<typename Stream, typename T> void Serialize(Stream& os, const std::unique_ptr<const T>& p);
 template<typename Stream, typename T> void Unserialize(Stream& os, std::unique_ptr<const T>& p);
 
-
-
 /**
  * If none of the specialized versions above matched, default to calling member function.
  */
@@ -565,7 +555,6 @@ inline void Unserialize(Stream& is, T&& a)
 {
     a.Unserialize(is);
 }
-
 
 /**
  * string
@@ -586,7 +575,6 @@ void Unserialize(Stream& is, std::basic_string<C>& str)
     if (nSize != 0)
         is.read((char*)str.data(), nSize * sizeof(C));
 }
-
 
 /**
  * prevector
@@ -612,7 +600,6 @@ inline void Serialize(Stream& os, const prevector<N, T>& v)
 {
     Serialize_impl(os, v, T());
 }
-
 
 template<typename Stream, unsigned int N, typename T>
 void Unserialize_impl(Stream& is, prevector<N, T>& v, const unsigned char&)
@@ -654,7 +641,6 @@ inline void Unserialize(Stream& is, prevector<N, T>& v)
     Unserialize_impl(is, v, T());
 }
 
-
 /**
  * vector
  */
@@ -679,7 +665,6 @@ inline void Serialize(Stream& os, const std::vector<T, A>& v)
 {
     Serialize_impl(os, v, T());
 }
-
 
 template<typename Stream, typename T, typename A>
 void Unserialize_impl(Stream& is, std::vector<T, A>& v, const unsigned char&)
@@ -721,7 +706,6 @@ inline void Unserialize(Stream& is, std::vector<T, A>& v)
     Unserialize_impl(is, v, T());
 }
 
-
 /**
  * pair
  */
@@ -738,7 +722,6 @@ void Unserialize(Stream& is, std::pair<K, T>& item)
     Unserialize(is, item.first);
     Unserialize(is, item.second);
 }
-
 
 /**
  * map
@@ -765,7 +748,6 @@ void Unserialize(Stream& is, std::map<K, T, Pred, A>& m)
     }
 }
 
-
 /**
  * set
  */
@@ -791,7 +773,6 @@ void Unserialize(Stream& is, std::set<K, Pred, A>& m)
     }
 }
 
-
 /**
  * unique_ptr
  */
@@ -806,7 +787,6 @@ void Unserialize(Stream& is, std::unique_ptr<const T>& p)
 {
     p.reset(new T(deserialize, is));
 }
-
 
 /**
  * shared_ptr
@@ -823,7 +803,6 @@ void Unserialize(Stream& is, std::shared_ptr<const T>& p)
     p = std::make_shared<const T>(deserialize, is);
 }
 
-
 /**
  * Support for ADD_SERIALIZE_METHODS and READWRITE macro
  */
@@ -835,7 +814,6 @@ struct CSerActionUnserialize
 {
     constexpr bool ForRead() const { return true; }
 };
-
 
 /* ::GetSerializeSize implementations
  *

@@ -11,7 +11,6 @@
 #include <thread>
 #include <mutex>
 
-
 ////////////////////////////////////////////////
 //                                            //
 // THE SIMPLE DEFINITION, EXCLUDING DEBUG CODE //

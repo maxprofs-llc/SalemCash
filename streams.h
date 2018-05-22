@@ -225,7 +225,6 @@ public:
         return (std::string(begin(), end()));
     }
 
-
     //
     // Vector subset
     //
@@ -324,7 +323,6 @@ public:
         nReadPos -= n;
         return true;
     }
-
 
     //
     // Stream subset
@@ -433,7 +431,6 @@ public:
         }
     }
 };
-
 
 /** Non-refcounted RAII wrapper for FILE*
  *
