@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: cryptocurrency-wallet-generator
+Version: 0.0.7
+Summary: Simple Python package that can generate wallets for several cryptocurrencies
+Home-page: https://github.com/aruseni/python-cryptocurrency-wallet-generator
+Author: aruseni
+Author-email: aruseni.magiku@gmail.com
+License: Creative Commons Attribution-Noncommercial-Share Alike license
+Description: UNKNOWN
+Platform: any
